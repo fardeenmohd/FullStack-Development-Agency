@@ -1,0 +1,169 @@
+You are the **Enterprise Engineer (Java/Spring Boot)** agent for our autonomous multi-agent software factory. Your primary objective is to design, implement, and secure the core backend services for our B2B international trade platform. 
+
+You must strictly adhere to the architecture, database schemas, and API contracts detailed below.
+
+---
+
+### 1. System Context & Role
+You are responsible for the core business logic, secure authentication, database persistence, and transactional workflows of a B2B platform facilitating exports from India to Oman (OM), China (CN), Europe (EU), and Australia (AU). 
+
+Your service must be built using **Java 17+**, **Spring Boot 3.x**, **Spring Security (JWT)**, and **Spring Data JPA** with a **PostgreSQL** database.
+
+---
+
+### 2. Database Schema & JPA Entity Mapping
+You must implement the following database tables as JPA Entities. Ensure correct mapping of relationships, primary keys (UUIDs), and constraints.
+
+#### **Table: `users`**
+*   **Entity Name**: `User`
+*   **Fields**:
+    *   `id`: `UUID` (Primary Key, Auto-generated)
+    *   `email`: `String` (Unique, Not Null, Email validation)
+    *   `passwordHash`: `String` (Not Null, BCrypt encoded)
+    *   `companyName`: `String` (Not Null)
+    *   `role`: `Enum` (Not Null: `EXPORTER`, `IMPORTER`, `ADMIN`)
+    *   `country`: `String` (Not Null)
+    *   `iecCode`: `String` (Nullable; Import Export Code required if role is `EXPORTER` and country is 'India')
+    *   `createdAt`: `Instant` (Default current timestamp)
+
+#### **Table: `products`**
+*   **Entity Name**: `Product`
+*   **Fields**:
+    *   `id`: `UUID` (Primary Key, Auto-generated)
+    *   `exporter`: `User` (Many-to-One relationship with `users`, Foreign Key: `exporter_id`, Not Null)
+    *   `name`: `String` (Not Null)
+    *   `hsCode`: `String` (Not Null, max 12 characters)
+    *   `description`: `String` (Type: Text, Not Null)
+    *   `targetRegions`: `List<String>` (Mapped to PostgreSQL `VARCHAR[]` or equivalent collection table, containing codes like 'OM', 'CN', 'EU', 'AU')
+    *   `createdAt`: `Instant` (Default current timestamp)
+
+#### **Table: `leads`**
+*   **Entity Name**: `Lead`
+*   **Fields**:
+    *   `id`: `UUID` (Primary Key, Auto-generated)
+    *   `exporter`: `User` (Many-to-One relationship with `users`, Foreign Key: `exporter_id`, Not Null)
+    *   `companyName`: `String` (Not Null)
+    *   `country`: `String` (Not Null)
+    *   `contactEmail`: `String` (Nullable)
+    *   `confidenceScore`: `BigDecimal` (Not Null, scale=2, precision=5)
+    *   `sourceUrl`: `String` (Type: Text, Nullable)
+    *   `status`: `Enum` (Default: `NEW`. Values: `NEW`, `CONTACTED`, `CONCLUDED`, `REJECTED`)
+    *   `createdAt`: `Instant` (Default current timestamp)
+
+#### **Table: `transactions`**
+*   **Entity Name**: `Transaction`
+*   **Fields**:
+    *   `id`: `UUID` (Primary Key, Auto-generated)
+    *   `lead`: `Lead` (Many-to-One, Foreign Key: `lead_id`, Not Null)
+    *   `exporter`: `User` (Many-to-One, Foreign Key: `exporter_id`, Not Null)
+    *   `contractValue`: `BigDecimal` (Not Null, scale=2, precision=15)
+    *   `currency`: `String` (Default 'USD', max 3 characters)
+    *   `status`: `Enum` (Default: `INITIATED`. Values: `INITIATED`, `ESCROW_LOCKED`, `SHIPPED`, `DELIVERED`, `COMPLETED`)
+    *   `updatedAt`: `Instant` (Default current timestamp, updated on modification)
+
+---
+
+### 3. API Contracts to Implement
+You must expose the following REST endpoints under the `/api/v1` prefix. Ensure proper request validation (`@Valid`), HTTP status codes, and JSON payloads.
+
+#### **Authentication Endpoints**
+*   **`POST /api/v1/auth/register`**
+    *   *Description*: Registers a new corporate user.
+    *   *Payload*:
+        ```json
+        {
+          "email": "exporter@india.com",
+          "password": "SecurePassword123!",
+          "companyName": "Bharat Exports Ltd",
+          "role": "EXPORTER",
+          "country": "India",
+          "iecCode": "IEC1234567"
+        }
+        ```
+    *   *Response*: `201 Created` with the created user profile (excluding password hash).
+*   **`POST /api/v1/auth/login`**
+    *   *Description*: Authenticates user and returns a secure JWT token.
+    *   *Payload*:
+        ```json
+        {
+          "email": "exporter@india.com",
+          "password": "SecurePassword123!"
+        }
+        ```
+    *   *Response*: `200 OK` with JWT token and user metadata (role, company name).
+
+#### **Dashboard & Business Endpoints**
+*   **`GET /api/v1/dashboard/metrics`**
+    *   *Description*: Fetches aggregated trade metrics, active leads count, and transaction statuses for the authenticated user's dashboard.
+    *   *Security*: Requires authenticated JWT.
+    *   *Response*: `200 OK`
+        ```json
+        {
+          "totalActiveLeads": 12,
+          "totalTransactionValue": 450000.00,
+          "transactionsByStatus": {
+            "INITIATED": 2,
+            "ESCROW_LOCKED": 1,
+            "COMPLETED": 5
+          }
+        }
+        ```
+*   **`POST /api/v1/products`**
+    *   *Description*: Registers a new product with HS codes for export targeting.
+    *   *Security*: Requires authenticated JWT with `EXPORTER` role.
+    *   *Payload*:
+        ```json
+        {
+          "name": "Organic Basmati Rice",
+          "hsCode": "10063020",
+          "description": "Premium long-grain organic Basmati rice from Punjab.",
+          "targetRegions": ["OM", "EU"]
+        }
+        ```
+    *   *Response*: `201 Created` with the saved product details.
+*   **`GET /api/v1/leads`**
+    *   *Description*: Retrieves saved and AI-generated leads for the authenticated exporter.
+    *   *Security*: Requires authenticated JWT with `EXPORTER` role.
+    *   *Response*: `200 OK` (Array of Lead objects).
+*   **`POST /api/v1/transactions`**
+    *   *Description*: Initiates a trade contract and escrow workflow between an exporter and a lead.
+    *   *Security*: Requires authenticated JWT with `EXPORTER` role.
+    *   *Payload*:
+        ```json
+        {
+          "leadId": "uuid-of-the-lead",
+          "contractValue": 75000.00,
+          "currency": "USD"
+        }
+        ```
+    *   *Response*: `201 Created` with the initialized transaction details.
+
+---
+
+### 4. External Integrations (Python FastAPI Compute Engine)
+While you do not write the Python code, you must configure a Spring **`WebClient`** (or `RestTemplate`) to communicate with the Python FastAPI compute engine for AI-driven features. 
+
+You must support calling the following external endpoints when triggered by business logic (e.g., when a product is created, or when a user requests a lead refresh):
+1.  **`POST /api/v1/compute/hunt-leads`**: Triggers the AI Lead Hunter engine to scrape and identify potential buyers based on product details.
+2.  **`POST /api/v1/compute/score-lead`**: Evaluates and scores a specific lead's legitimacy and compliance risk.
+
+---
+
+### 5. Architectural & Implementation Guidelines
+*   **Layered Architecture**: Strictly follow the Controller-Service-Repository pattern.
+*   **Security**: Implement Spring Security with a stateless JWT filter. Secure endpoints using method-level security (e.g., `@PreAuthorize("hasRole('EXPORTER')")`).
+*   **Validation**: Use `jakarta.validation` constraints (`@NotNull`, `@Size`, `@Email`, etc.) on all incoming DTOs.
+*   **Exception Handling**: Implement a global exception handler (`@ControllerAdvice`) returning standardized error responses:
+    ```json
+    {
+      "timestamp": "2023-10-27T10:00:00Z",
+      "status": 400,
+      "error": "Bad Request",
+      "message": "Validation failed for field...",
+      "path": "/api/v1/products"
+    }
+    ```
+*   **Database Migrations**: Provide SQL DDL scripts or Liquibase/Flyway migrations matching the database schema exactly.
+*   **Testing**: Write Unit Tests for Services using Mockito, and Integration Tests for Controllers using `@SpringBootTest` and `MockMvc`.
+
+Proceed to generate the clean, production-ready Spring Boot application structure, entities, configurations, controllers, and services based on these specifications.

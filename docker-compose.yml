@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: b2b-postgres
+    environment:
+      POSTGRES_DB: b2b_trade
+      POSTGRES_USER: trade_admin
+      POSTGRES_PASSWORD: SecureTradePassword123!
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - b2b-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U trade_admin -d b2b_trade"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend-java:
+    build:
+      context: ./backend-java
+      dockerfile: Dockerfile
+    container_name: b2b-backend-java
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/b2b_trade
+      - SPRING_DATASOURCE_USERNAME=trade_admin
+      - SPRING_DATASOURCE_PASSWORD=SecureTradePassword123!
+      - COMPUTE_ENGINE_URL=http://compute-python:8000
+      - JWT_SECRET=SuperSecretJWTKeyForB2BTradePlatform2026!
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - b2b-network
+
+  compute-python:
+    build:
+      context: ./compute-python
+      dockerfile: Dockerfile
+    container_name: b2b-compute-python
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://trade_admin:SecureTradePassword123!@db:5432/b2b_trade
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - b2b-network
+
+  frontend-nextjs:
+    build:
+      context: ./frontend-nextjs
+      dockerfile: Dockerfile
+    container_name: b2b-frontend-nextjs
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8080
+      - NEXT_PUBLIC_COMPUTE_API_URL=http://localhost:8000
+    depends_on:
+      - backend-java
+      - compute-python
+    networks:
+      - b2b-network
+
+volumes:
+  pgdata:
+
+networks:
+  b2b-network:
+    driver: bridge
