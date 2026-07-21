@@ -1,9 +1,8 @@
 {
     "architect": true,
-    "synthesizer": true,
     "frontend": true,
     "compute": true,
     "enterprise": true,
-    "qa_gatekeeper": true,
+    "qa": true,
     "devops": true
 }

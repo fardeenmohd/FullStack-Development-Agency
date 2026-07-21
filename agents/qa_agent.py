@@ -21,6 +21,8 @@ def run_qa_chunk(blueprint_data: dict, target_tier: str, tool_stack: str, output
     user_content = f"""
     Based on the following architecture blueprint, generate a comprehensive suite of automated 
     tests ONLY for the {target_tier} using {tool_stack}.
+
+    CRITICAL GPU LIMITATION: You are running on a local 8GB GPU. To prevent token overflow and truncated JSON, you MUST limit your generation to ONLY the 3 most critical test files. Do not generate every possible test.
     
     Blueprint:
     {json.dumps(blueprint_data, indent=2)}

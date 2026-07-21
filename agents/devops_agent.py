@@ -28,6 +28,10 @@ def run_devops_agent(blueprint_path: str):
     user_content = f"""
     Based on the following architecture blueprint, generate a root `docker-compose.yml` and the required `Dockerfile` for each of the three services (Frontend, Compute Engine, Enterprise Backend).
     
+    CRITICAL DOCKER RULES:
+    1. For the Java Backend, the 'openjdk' Docker images are deprecated. You MUST use 'eclipse-temurin:17-jdk-alpine' (or similar temurin image) as your base.
+    2. You MUST use Multi-Stage builds for compiled languages (Java, Next.js). Do NOT assume the code is already compiled. For Java, use a Maven image in Stage 1 to run 'mvn clean package', then copy the target/*.jar to the Stage 2 runtime image.
+    
     Blueprint:
     {json.dumps(blueprint_data, indent=2)}
     """

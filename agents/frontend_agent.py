@@ -12,9 +12,29 @@ You must output a strictly formatted JSON object containing:
    - "path": The target filename (e.g., "app/page.tsx", "components/Dashboard.tsx", "package.json")
    - "code": The full string content of the file.
 
-Ensure you include a basic package.json with the required dependencies and write modern, clean functional components.
-CRITICAL: Output ONLY valid JSON. Do not wrap the JSON in markdown code blocks.
+CRITICAL NEXT.JS APP ROUTER RULES:
+1. Every component or page that uses React hooks (`useState`, `useEffect`, `useContext`, `useRef`) MUST start with the exact line: `"use client";` at the very top.
+2. Use `import { useRouter } from 'next/navigation';` instead of 'next/router' (Next.js 13+ App Router standard).
+3. Output ONLY valid JSON. Do not wrap the JSON in markdown code blocks.
 """
+
+def fix_nextjs_code(code: str) -> str:
+    """Automatically injects 'use client' and fixes router imports for Next.js App Router."""
+    if not code.strip():
+        return code
+        
+    # Replace legacy router
+    code = code.replace("import { useRouter } from 'next/router';", "import { useRouter } from 'next/navigation';")
+    code = code.replace('import { useRouter } from "next/router";', 'import { useRouter } from "next/navigation";')
+    
+    # Check if client hooks are used and 'use client' is missing
+    needs_client = any(hook in code for hook in ["useState", "useEffect", "useContext", "useRef", "useCallback", "useMemo"])
+    has_client_directive = '"use client";' in code or "'use client';" in code
+    
+    if needs_client and not has_client_directive:
+        code = '"use client";\n' + code
+        
+    return code
 
 def run_frontend_agent(blueprint_path: str):
     if not os.path.exists(blueprint_path):
@@ -28,26 +48,37 @@ def run_frontend_agent(blueprint_path: str):
 
     user_content = f"""
     Based on the following architecture blueprint, generate the Next.js frontend repository.
-    Focus on creating the core pages, components, and API integration hooks.
+    Focus on creating core pages, components, and API integration hooks using Next.js App Router standards.
     
     Blueprint:
     {json.dumps(blueprint_data, indent=2)}
     """
 
     try:
-        # The generate_local_code function handles the request, timeout, and JSON parsing!
         generated_payload = generate_local_code(frontend_persona, user_content)
         files = generated_payload.get("files", [])
         
         base_frontend_dir = "../frontend-nextjs"
+        print(f"\n🧹 Cleaning old frontend source files in '{base_frontend_dir}'...")
+        if os.path.exists(os.path.join(base_frontend_dir, "app")):
+            import shutil
+            shutil.rmtree(os.path.join(base_frontend_dir, "app"))
+        if os.path.exists(os.path.join(base_frontend_dir, "components")):
+            import shutil
+            shutil.rmtree(os.path.join(base_frontend_dir, "components"))
+            
         print(f"\n🚀 Writing generated frontend code to '{base_frontend_dir}':")
         
         for file_info in files:
             target_path = os.path.join(base_frontend_dir, file_info["path"])
             os.makedirs(os.path.dirname(target_path), exist_ok=True)
             
+            file_code = file_info["code"]
+            if file_info["path"].endswith(".tsx") or file_info["path"].endswith(".ts"):
+                file_code = fix_nextjs_code(file_code)
+            
             with open(target_path, "w", encoding="utf-8") as code_file:
-                code_file.write(file_info["code"])
+                code_file.write(file_code)
             print(f"  ✅ Created: {file_info['path']}")
             
         print("\n🎉 Frontend codebase successfully scaffolded via Local GPU!")

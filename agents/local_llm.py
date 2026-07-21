@@ -20,7 +20,7 @@ def generate_local_code(system_prompt: str, user_content: str) -> dict:
         "format": "json", # Ollama natively supports forcing JSON output
         "options": {
             "temperature": 0.1,
-            "num_predict": 4000 # Max output tokens
+            "num_predict": 8000 # Increased to 8000 to prevent JSON truncation
         }
     }
 
