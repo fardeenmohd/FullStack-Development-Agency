@@ -1,0 +1,24 @@
+{
+  "name": "trade-platform",
+  "version": "1.0.0",
+  "description": "A robust B2B international trade platform",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^4.0.0",
+    "axios": "^1.1.3",
+    "next": "13.5.4",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "tailwindcss": "3.2.2"
+  },
+  "devDependencies": {
+    "autoprefixer": "10.4.14",
+    "postcss": "8.4.6",
+    "tailwindcss-cli": "0.7.5"
+  }
+}

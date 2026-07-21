@@ -7,7 +7,7 @@ const fetchMetrics = async () => {
   return response.data;
 };
 
-export default function Home() {
+export default function Dashboard() {
   const { data, isLoading, error } = useQuery('metrics', fetchMetrics);
 
   if (isLoading) return <div>Loading...</div>;

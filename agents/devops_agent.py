@@ -1,12 +1,7 @@
 import os
 import json
 import sys
-from google import genai
-from google.genai import types
-from dotenv import load_dotenv
-
-load_dotenv()
-client = genai.Client()
+from local_llm import generate_local_code
 
 devops_persona = """
 You are an expert DevOps Architect.
@@ -17,15 +12,15 @@ You must output a strictly formatted JSON object containing:
    - "path": The target filename (e.g., "docker-compose.yml", "frontend-nextjs/Dockerfile", "compute-python/Dockerfile", "backend-java/Dockerfile")
    - "code": The full string content of the configuration file.
 
-Ensure the Dockerfiles follow best practices (multi-stage builds, lightweight Alpine/Slim base images) and the docker-compose.yml correctly networks the 3 services together, exposing the right ports.
+CRITICAL: Output ONLY valid JSON. Do not wrap the JSON in markdown code blocks.
 """
 
 def run_devops_agent(blueprint_path: str):
     if not os.path.exists(blueprint_path):
-        print(f"❌ Error: {blueprint_path} not found. Run architect.py first.")
+        print(f"❌ Error: {blueprint_path} not found.")
         sys.exit(1)
 
-    with open(blueprint_path, "r") as f:
+    with open(blueprint_path, "r", encoding="utf-8") as f:
         blueprint_data = json.load(f)
 
     print("🐳 DevOps Architect is designing the container infrastructure...")
@@ -38,28 +33,7 @@ def run_devops_agent(blueprint_path: str):
     """
 
     try:
-        print("⏳ Calling Gemini API for Infrastructure Generation...")
-        response = client.models.generate_content(
-            model='gemini-3.5-flash', # Or your working model string
-            contents=user_content,
-            config=types.GenerateContentConfig(
-                system_instruction=devops_persona,
-                temperature=0.1,
-                response_mime_type="application/json",
-            )
-        )
-        print("✅ Connection successful!")
-        
-    except Exception as e:
-        error_str = str(e)
-        if "503" in error_str or "429" in error_str or "RESOURCE_EXHAUSTED" in error_str:
-            print("❌ API limit or server error reached. Exiting script to let Orchestrator handle the wait.")
-            sys.exit(1)
-        else:
-            raise e
-
-    try:
-        generated_payload = json.loads(response.text)
+        generated_payload = generate_local_code(devops_persona, user_content)
         files = generated_payload.get("files", [])
         
         base_dir = "../" 
@@ -73,11 +47,10 @@ def run_devops_agent(blueprint_path: str):
                 code_file.write(file_info["code"])
             print(f"  ✅ Created: {file_info['path']}")
             
-        print("\n🎉 Infrastructure-as-code successfully scaffolded!")
+        print("\n🎉 Infrastructure-as-code successfully scaffolded via Local GPU!")
 
-    except json.JSONDecodeError:
-        print("❌ Error: Failed to parse JSON payload. Raw response:")
-        print(response.text)
+    except Exception as e:
+        print(f"❌ Error during local devops generation: {e}")
         sys.exit(1)
 
 if __name__ == "__main__":
