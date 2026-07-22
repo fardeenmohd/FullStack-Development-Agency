@@ -1,5 +1,28 @@
 # Gemini Multi-Service AI Platform
 
+| Agent File          | Persona               | Primary Role                                                                                                               |
+| :------------------ | :-------------------- | :------------------------------------------------------------------------------------------------------------------------- |
+| `mother_agent.py`   | The Visionary         | Creates the initial `requirements.txt` from a high-level idea.                                                             |
+| `father_agent.py`   | The Critic            | Validates the `requirements.txt` for logical consistency.                                                                  |
+| `architect.py`      | The Architect         | Designs the `system_blueprint.json` defining microservice architecture.                                                    |
+| `synthesizer.py`    | The Prompt Engineer   | Creates specific, context-rich prompts for developer agents.                                                               |
+| `devops_agent.py`   | The DevOps Engineer   | Generates `Dockerfile`s and the `docker-compose.yml`.                                                                      |
+| `po_agent.py`       | The Product Owner     | Creates tickets on the Kanban board from feature requests.                                                                 |
+| `run_all.py`        | The Dispatcher/Developer | Takes tickets, generates code, applies it, and moves to `in_review`.                                                       |
+| `designer_agent.py` | The UX/UI Designer    | Polishes frontend UI/UX and hot-reloads the service.                                                                       |
+| `qa_gatekeeper.py`  | The QA Gatekeeper     | Generates and executes `unittest` scripts for backend code in review.                                                      |
+| `docker_agent.py`   | The Build Engineer    | Attempts to build services with code changes and catches build errors.                                                     |
+| `dba_agent.py`      | The DBA               | Generates and applies Flyway SQL migrations for JPA `@Entity` changes.                                                     |
+| `secops_agent.py`   | The SecOps Engineer   | Scans completed code for security vulnerabilities and creates hotfix tickets.                                              |
+| `documenter_agent.py` | The Technical Writer  | Generates release notes for `CHANGELOG.md` from archived tickets.                                                          |
+| `innovator_agent.py`| The Innovator         | Invents new features and creates tickets when the system is idle.                                                          |
+| `refactor_agent.py` | The Maintainer        | Refactors modified files for quality and rebuilds services after a sprint.                                                 |
+| `surveillance_agent.py`| The SRE             | Monitors Docker logs for crashes, generates hotfixes, and restarts services.                                               |
+| `local_llm.py`      | Local LLM Adapter     | Client for the locally hosted Ollama LLM.                                                                                  |
+| `env_setup.py`      | Environment Setup     | Helper script to load `.env` file and expose API keys.                                                                     |
+| `pull_model.py`     | Model Downloader      | One-time script to download the local code generation model.                                                               |
+| `list_models.py`    | Model Lister          | Utility to list available cloud-based Google Gemini models.                                                                |
+
 This project implements a sophisticated multi-service AI platform, designed to leverage a microservices architecture for enhanced scalability, maintainability, and specialized functionality. It integrates AI agents for intelligent automation, a robust Java Spring Boot backend for core business logic, a high-performance Python FastAPI compute service, and a modern Next.js frontend for a dynamic user experience.
 
 ## Agent System Workflows
@@ -76,8 +99,10 @@ The system is designed as a classic three-tier microservice application, with re
 
 ### Prerequisites
 
-*   Docker Desktop
-*   Git
+*   **Docker Desktop:** Required for running the microservices.
+*   **Git:** For cloning the repository.
+*   **Ollama:** For running the local LLM (`qwen2.5-coder:7b`) that powers several autonomous agents. Ensure Ollama is running in the background.
+*   **Git Bash (Windows only):** `start_agency.py` launches agents in separate Git Bash windows.
 
 ### Installation
 
@@ -86,22 +111,33 @@ The system is designed as a classic three-tier microservice application, with re
     git clone https://github.com/your-username/your-repo-name.git
     cd your-repo-name
     ```
-2.  **Run the Parental Guidance System (Scaffolding):**
-    Execute the `mother_agent.py` to start the initial application scaffolding process.
+2.  **Set up Python Virtual Environment and Install Dependencies:**
+    It's highly recommended to create and activate a Python virtual environment (`venv`) for the agents. `start_agency.py` is configured to activate this environment.
     ```bash
-    python agents/mother_agent.py
+    python -m venv agents/venv
+    # On Windows (in your primary terminal, not Git Bash):
+    .\agents\venv\Scripts\activate
+    # On macOS/Linux:
+    source agents/venv/bin/activate
+    
+    # Install Python dependencies for all agents
+    pip install -r agents/requirements.txt
     ```
-    Follow the prompts. This will trigger the entire agent team to generate, build, and deploy the application.
+    (Note: If `agents/requirements.txt` does not exist, run `pip install google-generativeai python-dotenv requests` for basic functionality. The `mother_agent.py` should generate a more comprehensive `requirements.txt` during scaffolding.)
 
-3.  **Use the Antigravity System (Iterative Changes):**
-    To make changes, use the `po_agent.py` to create tickets. The `run_all.py` dispatcher will handle the rest.
+3.  **Download Local LLM (if not already done):**
+    The autonomous agents (Innovator, Refactor, SecOps, DBA, Designer, Surveillance, Documenter) rely on a local LLM. Run this script *once* to download the required `qwen2.5-coder:7b` model via Ollama.
     ```bash
-    # Run the dispatcher in a separate terminal
-    python agents/run_all.py
-
-    # In another terminal, create a ticket
-    python agents/po_agent.py "Add a new button to the main dashboard"
+    python agents/pull_model.py
     ```
+    Ensure Ollama is running before executing this.
+
+4.  **Start the Entire Autonomous Agency:**
+    Launch all the background agents (Dispatcher, Designer, QA Gatekeeper, SecOps, DBA, etc.) with a single command from your project root. This will open multiple Git Bash terminal windows, one for each agent.
+    ```bash
+    python start_agency.py
+    ```
+    *   **Note for Windows users:** If your Git Bash installation path is different from the default, update the `GIT_BASH_PATH` variable inside `start_agency.py` to match your installation.
 
 ### Accessing the Application
 
@@ -111,62 +147,44 @@ The system is designed as a classic three-tier microservice application, with re
 
 ## Project Structure and Agent Roles
 
-The project is organized into the core applications and the `agents` directory, which contains the AI-driven software factory. The agents can be understood in three categories: Core Workflow Agents for initial creation, Autonomous Loop Agents for continuous improvement, and Utilities for support.
+The project's intelligence lies in the `agents` directory. The agents form a sophisticated, autonomous software factory that operates around a multi-stage Kanban board (`todo` -> `in_progress` -> `in_review` -> `done` -> `archived`). They are best understood by their role in this pipeline.
 
-```
-.
-├── agents/                         # Python-based AI agents and orchestration scripts
-│   ├── mother_agent.py             # -> Core Workflow
-│   ├── father_agent.py             # -> Core Workflow
-│   ├── architect.py                # -> Core Workflow
-│   ├── synthesizer.py              # -> Core Workflow
-│   ├── frontend_agent.py           # -> Core Workflow
-│   ├── compute_agent.py            # -> Core Workflow
-│   ├── enterprise_agent.py         # -> Core Workflow
-│   ├── devops_agent.py             # -> Core Workflow
-│   ├── qa_agent.py                 # -> Core Workflow
-│   ├── docker_agent.py             # -> Core Workflow
-│   ├── po_agent.py                 # -> Core Workflow
-│   ├── run_all.py                  # -> Core Workflow
-│   ├── innovator_agent.py          # -> Autonomous Loop
-│   ├── refactor_agent.py           # -> Autonomous Loop
-│   ├── surveillance_agent.py       # -> Autonomous Loop
-│   ├── local_llm.py                # -> Utility/Helper
-│   ├── pull_model.py               # -> Utility/Helper
-│   └── list_models.py              # -> Utility/Helper
-├── backend-java/
-├── compute-python/
-├── frontend-nextjs/
-└── qa-tests/
-```
+### 1. Core Scaffolding & Task Management Agents
 
-### Core Workflow Agents (Scaffolding & Iteration)
+These agents handle the initial project creation and the core task loop (creating and executing tickets).
 
-These agents work in sequence to perform the initial application generation and handle user-driven iterative changes.
+*   **`mother_agent.py` (The Visionary):** Entry point for scaffolding. Creates the initial `requirements.txt` from a high-level idea.
+*   **`father_agent.py` (The Critic):** Validates the `requirements.txt` for logical consistency.
+*   **`architect.py` (The Architect):** Designs the `system_blueprint.json` from the requirements, defining the microservice architecture.
+*   **`synthesizer.py` (The Prompt Engineer):** Creates specific, context-rich prompts for developer agents based on the blueprint.
+*   **`devops_agent.py` (The DevOps Engineer):** Generates `Dockerfile`s and the `docker-compose.yml`.
+*   **`po_agent.py` (The Product Owner):** Creates tickets on the Kanban board from user or AI (`innovator_agent`) feature requests.
+*   **`run_all.py` (The Dispatcher/Developer):** The primary worker. It takes tickets from the `todo` column, generates the code, applies it, and moves the ticket to `in_review`. It also retries tickets kicked back from the QA or Designer agents.
 
-*   **`mother_agent.py` (The Visionary):** The entry point for scaffolding. Takes a high-level product idea and uses an LLM to generate a detailed `requirements.txt` specification.
-*   **`father_agent.py` (The Critic):** Reviews the `requirements.txt` for logical flaws, engaging in a feedback loop with the Mother Agent to ensure the specification is sound.
-*   **`architect.py` (The Architect):** Reads the approved `requirements.txt` and uses a powerful reasoning model (`gemini-1.5-pro`) to produce the `system_blueprint.json`, defining the architecture and separating concerns for each microservice.
-*   **`synthesizer.py` (The Prompt Engineer):** Parses the `system_blueprint.json` and generates tailored, context-rich prompts for each specialized developer agent.
-*   **`frontend_agent.py`, `compute_agent.py`, `enterprise_agent.py` (The Developers):** Execute the prompts generated by the synthesizer to write the source code for the Next.js, Python FastAPI, and Java Spring Boot services.
-*   **`devops_agent.py` (The DevOps Engineer):** Generates the `Dockerfile` for each service and the root `docker-compose.yml` file to orchestrate the application stack.
-*   **`qa_agent.py` (The QA Engineer):** Reads the source code and blueprint to generate comprehensive test suites for all services using appropriate frameworks.
-*   **`docker_agent.py` (The Build Engineer):** Automates the `docker-compose build` process. If a build fails, it uses a local LLM to analyze logs and attempt a fix.
-*   **`po_agent.py` (The Product Owner):** The entry point for iterative changes. It takes a user's feature request and creates a structured ticket on the `antigravity_board.json` (Kanban board).
-*   **`run_all.py` (The Dispatcher):** The engine for iterative changes. It watches the Kanban board for new tickets and dispatches an LLM to generate and apply the required code changes.
+### 2. Pipeline & Quality Gate Agents
 
-### Autonomous Loop Agents (Self-Management)
+These specialist agents watch the `in_review` column, acting as automated code review and quality gates before a ticket can be marked as "done".
 
-These agents run continuously in the background, observing the system and taking action without direct user intervention. They rely on the local LLM via `local_llm.py`.
+*   **`designer_agent.py` (The UX/UI Designer):** Watches for `frontend` tickets in review. It automatically polishes the UI/UX of the code using a design system prompt and then hot-reloads the frontend service.
+*   **`qa_gatekeeper.py` (The QA Gatekeeper):** Watches for `compute` or `enterprise` tickets in review. It generates and executes `unittest` scripts inside the appropriate Docker container to validate the new code. If tests fail, it rejects the ticket and sends it back to `todo` with the failure logs for the Dispatcher to fix.
+*   **`docker_agent.py` (The Build Engineer):** Though used in scaffolding, its primary loop function is to attempt to build any service that has a code change, catching build errors before they break the application.
 
-*   **`innovator_agent.py` (The Innovator):** Watches the Kanban board. When the development team is idle, it reviews the project's feature history (`innovation_history.txt`) and blueprint to invent a new, synergistic feature. It then calls `po_agent.py` to create a ticket for its own idea, ensuring the project never stagnates.
-*   **`refactor_agent.py` (The Maintainer):** Watches the Kanban board for a completed "sprint" (when no tickets are in "todo" or "in_progress"). It then identifies all recently modified files, uses the local LLM to refactor them for quality, and rebuilds the services to validate the changes.
-*   **`surveillance_agent.py` (The SRE):** Continuously monitors the Docker logs of all running services for crash signatures. If an error is detected, it uses the local LLM to generate a hotfix, applies it to the code, and restarts the crashed service, providing self-healing capabilities.
+### 3. Autonomous Post-Process & Surveillance Agents
 
-### Utility & Helper Scripts
+These agents run continuously, observing the system state and performing automated maintenance, security, and documentation tasks on tickets that are already in the `done` or `archived` columns.
+
+*   **`dba_agent.py` (The DBA):** Scans completed `enterprise` tickets. If it detects a change to a JPA `@Entity` file, it auto-generates a Flyway SQL migration script and restarts the database to apply the schema change.
+*   **`secops_agent.py` (The SecOps Engineer):** Continuously scans all completed code in `done` and `archived` for security vulnerabilities. If a flaw is found, it injects a high-priority hotfix ticket into the front of the `todo` queue.
+*   **`documenter_agent.py` (The Technical Writer):** Batches completed tickets from the `archived` column and uses an LLM to write professional, user-friendly release notes, which it prepends to the project's `CHANGELOG.md`.
+*   **`innovator_agent.py` (The Innovator):** An autonomous product manager. When the entire system is idle (no tickets in `todo` or `in_progress`), it invents a new, synergistic feature and calls `po_agent.py` to create a new ticket, starting the development cycle anew.
+*   **`refactor_agent.py` (The Maintainer):** After a "sprint" is complete, this agent refactors all modified files for quality and then rebuilds the services to ensure nothing was broken.
+*   **`surveillance_agent.py` (The SRE):** Provides runtime self-healing. It monitors Docker logs for crash signatures, and if a service fails, it uses an LLM to generate a hotfix, applies it, and restarts the service.
+
+### 4. Utility & Helper Scripts
 
 These scripts support the agent ecosystem.
 
-*   **`local_llm.py` (Local LLM Adapter):** A crucial utility module that acts as a client for a locally hosted Ollama LLM (`qwen2.5-coder:7b`). It provides a simple interface for the autonomous agents to access powerful, local code generation and analysis.
-*   **`pull_model.py`:** A one-time setup script that sends a request to the Ollama server to download the required 4GB+ code generation model.
-*   **`list_models.py`:** A simple utility to query and list the models available via the primary (cloud) Google Gemini API key.
+*   **`local_llm.py` (Local LLM Adapter):** A crucial client for the locally hosted Ollama LLM (`qwen2.5-coder:7b`), used by all the autonomous loop agents.
+*   **`env_setup.py`:** A simple helper script to load the `.env` file and expose the Gemini API key to the agents.
+*   **`pull_model.py`:** A one-time setup script to download the required local code generation model.
+*   **`list_models.py`:** A utility to list available cloud-based Google Gemini models.
