@@ -1,3 +1,18 @@
-FROM python:3.9-slim AS builder
+FROM python:3.10-slim
 
-# Add your build instructions here
+WORKDIR /app
+
+
+COPY requirements.txt .
+
+
+RUN touch requirements.txt && pip install --no-cache-dir -r requirements.txt
+
+
+COPY . .
+
+
+EXPOSE 8000
+
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

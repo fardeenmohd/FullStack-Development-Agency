@@ -23,8 +23,8 @@ const ProgressTracker = ({ data }) => {
   };
 
   return (
-    <div>
-      <h2>Progress Tracker</h2>
+    <div className="bg-white p-8 rounded-lg shadow-md">
+      <h2 className="text-2xl font-semibold mb-4">Progress Tracker</h2>
       <Line data={chartData} options={{ maintainAspectRatio: false }} />
     </div>
   );

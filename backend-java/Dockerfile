@@ -1,3 +1,24 @@
-FROM eclipse-temurin:17-jre-alpine AS builder
 
-# Add your build instructions here
+FROM maven:3.9.5-eclipse-temurin-17 AS builder
+WORKDIR /app
+
+
+COPY pom.xml .
+RUN mvn dependency:go-offline -B || true
+
+
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
+
+
+COPY --from=builder /app/target/*.jar app.jar
+
+
+EXPOSE 8080
+
+
+CMD ["java", "-jar", "app.jar"]

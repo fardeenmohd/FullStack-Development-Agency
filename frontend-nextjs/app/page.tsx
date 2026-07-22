@@ -74,18 +74,23 @@ const LeadSegmentationDashboard = () => {
             </div>
           </section>
           <section className="bg-gray-700 p-8 rounded-lg shadow mb-8 hover:bg-gray-800 transition-colors duration-200">
-            <h3 className="text-xl font-semibold">Lead List</h3>
+            <h3 className="text-xl font-semibold">Product Performance Analytics</h3>
+            <div className="mt-4 space-y-6">
+              {/* Add product performance analytics here */}
+            </div>
+          </section>
+          <section className="bg-gray-700 p-8 rounded-lg shadow mb-8 hover:bg-gray-800 transition-colors duration-200">
+            <h3 className="text-xl font-semibold">Top-Performing Products</h3>
             <ul className="space-y-6 mt-4">
-              {filteredLeads.map(lead => (
-                <li key={lead.id} className="bg-gray-800 p-8 rounded-lg shadow hover:bg-gray-800 transition-colors duration-200">
-                  <div className="flex justify-between items-center">
-                    <strong>{lead.name}</strong>: {lead.country}, {lead.industry}, {lead.productInterest}
-                  </div>
-                </li>
-              ))}
+              {/* Add top-performing products here */}
             </ul>
           </section>
-          {/* Add sections for Historical Conversion Rates, Current Market Trends, and Actionable Insights */}
+          <section className="bg-gray-700 p-8 rounded-lg shadow mb-8 hover:bg-gray-800 transition-colors duration-200">
+            <h3 className="text-xl font-semibold">Areas for Improvement</h3>
+            <ul className="space-y-6 mt-4">
+              {/* Add areas for improvement here */}
+            </ul>
+          </section>
         </main>
       </div>
     </div>
