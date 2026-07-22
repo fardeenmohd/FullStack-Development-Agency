@@ -59,31 +59,38 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="p-4">
-      <h1>Dashboard</h1>
-      {user && (
-        <div>
-          <p>Welcome, {user.company_name}</p>
-          <button onClick={handleLogout}>Logout</button>
-        </div>
-      )}
-
-      <h2>Metrics</h2>
-      <pre>{JSON.stringify(metrics, null, 2)}</pre>
-
-      <h2>Products</h2>
-      <ul>
-        {products.map(product => (
-          <li key={product.id}>{product.name}</li>
-        ))}
-      </ul>
-
-      <h2>Leads</h2>
-      <ul>
-        {leads.map(lead => (
-          <li key={lead.id}>{lead.company_name} - Confidence: {lead.confidence_score}</li>
-        ))}
-      </ul>
+    <div className="flex h-screen bg-gray-900 text-white">
+      <aside className="w-64 bg-gray-800 p-4">
+        <h2 className="text-lg font-bold">Dashboard</h2>
+        <nav className="mt-4">
+          <ul>
+            <li className="mb-2"><a href="#" className="block px-3 py-2 rounded hover:bg-gray-700">Overview</a></li>
+            <li className="mb-2"><a href="#" className="block px-3 py-2 rounded hover:bg-gray-700">Products</a></li>
+            <li className="mb-2"><a href="#" className="block px-3 py-2 rounded hover:bg-gray-700">Leads</a></li>
+            <li><a href="#" onClick={handleLogout} className="block px-3 py-2 rounded hover:bg-gray-700">Logout</a></li>
+          </ul>
+        </nav>
+      </aside>
+      <div className="flex flex-col flex-1">
+        <header className="bg-gray-800 p-4 border-b border-gray-700">
+          <div className="flex justify-between items-center">
+            <img src="/logo.png" alt="Brand Logo" className="h-10" />
+            {user && (
+              <div>
+                <p>Welcome, {user.company_name}</p>
+              </div>
+            )}
+          </div>
+        </header>
+        <main className="flex flex-col p-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-gray-700 p-4 rounded shadow">Metric 1</div>
+            <div className="bg-gray-700 p-4 rounded shadow">Metric 2</div>
+            <div className="bg-gray-700 p-4 rounded shadow">Metric 3</div>
+            <div className="bg-gray-700 p-4 rounded shadow">Metric 4</div>
+          </div>
+        </main>
+      </div>
     </div>
   );
 };

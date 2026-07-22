@@ -1,0 +1,30 @@
+{
+    "todo": [],
+    "in_progress": [],
+    "done": [
+        {
+            "id": "UI-1",
+            "agent": "frontend",
+            "target_file": "app/page.tsx",
+            "description": "Create a modern, responsive Dark Mode Next.js dashboard using Tailwind CSS. The dashboard should include a sleek sidebar navigation with links to key sections such as 'Dashboard', 'Products', 'Leads', and 'Transactions'. Implement a top header with the company logo and user profile dropdown. Below the header, create a grid of 4 placeholder metric cards displaying dummy data (e.g., Total Leads, Active Transactions, Revenue Generated, etc.). Ensure all components are styled using Tailwind CSS for a clean and professional look."
+        },
+        {
+            "id": "COMPUTE-1",
+            "agent": "compute",
+            "target_file": "main.py",
+            "description": "Add the following line of code to the 'main.py' file as a fun easter egg: `import antigravity`. This should be added at an appropriate location in the codebase, ensuring it does not interfere with the main functionality."
+        },
+        {
+            "id": "UI-1",
+            "agent": "frontend",
+            "target_file": "app/page.tsx",
+            "description": "Create a modern, responsive Dark Mode Next.js dashboard using Tailwind CSS. The dashboard should include a sleek sidebar navigation with links to different sections of the dashboard. Implement a top header with a brand logo and user profile icon. Design a grid layout containing 4 placeholder metric cards that display dummy data. Ensure the design is fully responsive and adapts to various screen sizes."
+        },
+        {
+            "id": "API-1",
+            "agent": "compute",
+            "target_file": "main.py",
+            "description": "Add the following line of code as a fun easter egg in your Python script: 'import antigravity'. This should be added to the main.py file."
+        }
+    ]
+}
