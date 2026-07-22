@@ -11,7 +11,10 @@ MODEL_NAME = "qwen2.5-coder:7b" # Your local 3070 Ti model
 MAX_BUILD_RETRIES = 3 
 MAX_RUNTIME_RETRIES_PER_SERVICE = 3
 CHECK_INTERVAL = 15 # How often to poll logs in Phase 2
-PROJECT_ROOT = ".." # Assuming this script runs from inside the 'agents' folder
+
+# Set up robust absolute paths so this script works from ANY directory
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(CURRENT_DIR, ".."))
 
 # Track retries so the AI doesn't get stuck in an infinite loop trying to fix the same runtime crash
 service_retries = {}
@@ -164,6 +167,7 @@ def surveillance_loop():
 def main():
     print("===================================================")
     print("🤖 PHASE 1: AUTONOMOUS BUILD SUPERVISOR")
+    print(f"📂 Bound to Project Root: {PROJECT_ROOT}")
     print("===================================================")
     
     attempt = 1
@@ -193,7 +197,7 @@ def main():
                     print("🛑 [Docker Agent] Stopping autonomous loop due to parsing error.")
                     break
             else:
-                print("🛑 [Docker Agent] LLM returned empty response. Stopping.")
+                print("🛑 [Docker Agent] LLM returned empty response.Stopping.")
                 break
                 
             print("⏳ Waiting 3 seconds before retrying build...")

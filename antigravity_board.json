@@ -1,5 +1,286 @@
 {
-    "todo": [],
+    "todo": [
+        {
+            "id": "SEC-BUG-1784730440",
+            "agent": "compute",
+            "target_file": "utils/dataAggregationUtils.py",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nThe function `fetch_data` is vulnerable to SQL injection because it directly executes a query string passed as an argument. To fix this, use parameterized queries instead of string interpolation. For example: `result = connection.execute(text(query), params=params)` where `params` is a dictionary containing the parameters for the query.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730428",
+            "agent": "enterprise",
+            "target_file": "background_jobs/check_leads.py",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nThe code is vulnerable to SQL Injection. The `select` statement uses string formatting to construct the query, which can be exploited if `alert.next_check_time` or any other input is not properly sanitized. To fix this, use parameterized queries instead of string formatting.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730427",
+            "agent": "enterprise",
+            "target_file": "models/alerts.py",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nHardcoded database credentials are present in the code. This exposes sensitive information and can lead to unauthorized access if the file is compromised. To fix this, remove the hardcoded credentials and use environment variables or a configuration management system to store and retrieve them.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730425",
+            "agent": "compute",
+            "target_file": "api/v1/alerts.py",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nThe code is vulnerable to SQL Injection. The `user_id` and `criteria` fields are directly inserted into the database without any sanitization or parameterized queries, which could allow an attacker to manipulate the SQL query and execute arbitrary SQL commands.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730421",
+            "agent": "devops",
+            "target_file": ".env",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nHardcoded secrets/passwords found in the .env file. Specifically, 'EMAIL_PASSWORD', 'NOTIFICATION_API_KEY', and 'GEMINI_API_KEY' are hardcoded and should be removed or replaced with environment variables that are securely managed.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730413",
+            "agent": "compute",
+            "target_file": "api/notifications.py",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nThe application uses a hardcoded JWT secret key ('your-secret-key') which is insecure. This key should be stored securely and not hard-coded in the source code. To fix this, generate a strong random secret key and store it in an environment variable or a secure configuration management system.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730411",
+            "agent": "devops",
+            "target_file": ".env.example",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nHardcoded secrets/passwords. The file contains environment variables for API keys and database connection strings, which should be securely managed and not hardcoded in the source code. Remove these values and use a secure method to load them at runtime, such as environment variables or a secrets management service.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730409",
+            "agent": "compute",
+            "target_file": "api/notifications.py",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nThe application uses a hardcoded JWT secret key ('your-secret-key') which is insecure. This key should be stored securely and not hard-coded in the source code. To fix this, generate a strong random secret key and store it in an environment variable or a secure vault.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730406",
+            "agent": "devops",
+            "target_file": ".env.example",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nHardcoded secrets/passwords. The file contains environment variables for API keys and database connection strings, which should be securely managed and not hardcoded in the source code. To patch this vulnerability, remove these values from the .env.example file and use a secure method to manage them, such as environment variables or a secrets management service.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730404",
+            "agent": "compute",
+            "target_file": "api/notifications.py",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nThe application uses a hardcoded JWT secret key ('your-secret-key') which is insecure. This key should be stored securely and not hard-coded in the source code. To fix this, generate a strong random secret key and store it in an environment variable or a secure configuration management system.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730402",
+            "agent": "devops",
+            "target_file": ".env.example",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nHardcoded secrets/passwords. The file contains environment variables for API keys and database connection strings, which should be securely managed and not hardcoded in the source code. To patch this vulnerability, remove the default values and ensure that these sensitive values are stored securely using environment variables or a secure vault.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730400",
+            "agent": "compute",
+            "target_file": "api/notifications.py",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nThe application uses a hardcoded JWT secret key ('your-secret-key') which is insecure. This key should be stored securely and not hard-coded in the source code. To fix this, generate a secure random secret key and store it in an environment variable or a secure vault.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730397",
+            "agent": "devops",
+            "target_file": ".env.example",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nHardcoded secrets/passwords. The file contains environment variables for API keys and database connection strings, which should be securely managed and not hardcoded in the source code. Remove these values and use a secure method to load them at runtime.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730396",
+            "agent": "compute",
+            "target_file": "api/notifications.py",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nThe application uses a hardcoded JWT secret key ('your-secret-key') which is insecure. This key should be stored securely and not hard-coded in the source code. To fix this, generate a strong random secret key and store it in an environment variable or a secure vault.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730391",
+            "agent": "compute",
+            "target_file": "api/notifications.py",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nThe application uses a hardcoded JWT secret key ('your-secret-key') which is insecure. This key should be stored securely and not hard-coded in the source code. To fix this, generate a strong random secret key and store it in an environment variable or a secure vault.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730387",
+            "agent": "compute",
+            "target_file": "api/notifications.py",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nThe application uses a hardcoded JWT secret key ('your-secret-key') which is insecure. This key should be stored securely and not hard-coded in the source code. To fix this, generate a strong random secret key and store it in an environment variable or a secure vault.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730383",
+            "agent": "compute",
+            "target_file": "api/notifications.py",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nThe application uses a hardcoded JWT secret key ('your-secret-key') which is insecure. This key should be stored securely and not hard-coded in the source code. To fix this, generate a strong random secret key and store it in an environment variable or a secure configuration management system.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730380",
+            "agent": "compute",
+            "target_file": "api/notifications.py",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nThe application uses a hardcoded JWT secret key ('your-secret-key') which is insecure. This key should be stored securely and not hard-coded in the source code. To fix this, generate a strong random secret key and store it in an environment variable or a secure configuration management system.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730378",
+            "agent": "devops",
+            "target_file": ".env.example",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nHardcoded secrets/passwords. The file contains environment variables for API keys and database connection strings, which should not be hardcoded in the source code. These values should be stored securely using environment variables or a secure vault.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730377",
+            "agent": "compute",
+            "target_file": "api/notifications.py",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nThe application uses a hardcoded JWT secret key ('your-secret-key') which is insecure. This key should be stored securely and not hard-coded in the source code. To fix this, generate a strong random secret key and store it in an environment variable or a secure vault.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730374",
+            "agent": "devops",
+            "target_file": ".env.example",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nHardcoded secrets/passwords. The file contains environment variables for API keys and database connection strings, which should be securely managed and not hardcoded in the source code. Remove these values and use a secure method to load them at runtime.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730372",
+            "agent": "compute",
+            "target_file": "api/notifications.py",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nThe application uses a hardcoded JWT secret key ('your-secret-key') which is insecure. This key should be stored securely and not hard-coded in the source code. To fix this, generate a strong random secret key and store it in an environment variable or a secure vault.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730369",
+            "agent": "devops",
+            "target_file": ".env.example",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nHardcoded secrets/passwords. The file contains environment variables for API keys and database connection strings, which should be securely managed and not hardcoded in the source code. To fix this, use a secure method to store and retrieve these values, such as environment variables on the server or a secure vault service.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730367",
+            "agent": "compute",
+            "target_file": "api/notifications.py",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nThe application uses a hardcoded JWT secret key ('your-secret-key') which is insecure. This key should be stored securely and not hard-coded in the source code. To fix this, generate a strong random secret key and store it in an environment variable or a secure configuration management system.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730361",
+            "agent": "compute",
+            "target_file": "api/notifications.py",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nThe application uses a hardcoded JWT secret key ('your-secret-key') which is insecure. This key should be stored securely and not hard-coded in the source code. To fix this, generate a secure random secret key and store it in an environment variable or a secure vault.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730360",
+            "agent": "compute",
+            "target_file": "api/notifications.py",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nThe application uses a hardcoded JWT secret key ('your-secret-key') which is insecure. This key should be stored securely and not hard-coded in the source code. To fix this, generate a strong random secret key and store it in an environment variable or a secure configuration management system.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730355",
+            "agent": "compute",
+            "target_file": "api/notifications.py",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nThe application uses a hardcoded JWT secret key ('your-secret-key') which is insecure. This key should be stored securely and not hard-coded in the source code. To fix this, generate a secure random secret key and store it in an environment variable or a secure vault.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730351",
+            "agent": "compute",
+            "target_file": "api/notifications.py",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nThe application uses a hardcoded JWT secret key ('your-secret-key') which is insecure. This key should be stored securely and not hard-coded in the source code. To fix this, generate a strong random secret key and store it in an environment variable or a secure configuration management system.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730349",
+            "agent": "devops",
+            "target_file": ".env.example",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nHardcoded secrets/passwords. The file contains environment variables for API keys and database connection strings, which should be securely managed and not hardcoded in the source code. To fix this, use a secure method to store and retrieve these values, such as environment variables on the server or a secure vault service.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730347",
+            "agent": "compute",
+            "target_file": "api/notifications.py",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nThe application uses a hardcoded JWT secret key ('your-secret-key') which is insecure. This key should be stored securely and not hard-coded in the source code. To fix this, generate a secure random secret key and store it in an environment variable or a secure vault.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730340",
+            "agent": "devops",
+            "target_file": ".env.example",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nHardcoded secrets/passwords. The file contains environment variables for API keys and database connection strings, which should be securely managed and not hardcoded in the source code. Remove these values and use a secure method to load them at runtime, such as environment variables or a secure vault.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730339",
+            "agent": "compute",
+            "target_file": "api/notifications.py",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nThe application uses a hardcoded JWT secret key ('your-secret-key') which is insecure. This key should be stored securely and not hard-coded in the source code. To fix this, generate a secure random secret key and store it in an environment variable or a secure vault.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730336",
+            "agent": "devops",
+            "target_file": ".env.example",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nThe file contains hardcoded secrets/passwords in plain text. This is a critical security flaw as it exposes sensitive information that could be used to compromise the application or its database. To patch this vulnerability, remove all hardcoded secrets and store them securely using environment variables or a secure vault.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730334",
+            "agent": "compute",
+            "target_file": "api/notifications.ts",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nThe code is vulnerable to SQL Injection. The `db.query` method directly uses user input (`userId` and `notificationTypes`) without proper sanitization or parameterized queries, which can lead to malicious SQL execution if an attacker provides crafted input. To fix this, use parameterized queries instead of string interpolation for the SQL query.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730332",
+            "agent": "devops",
+            "target_file": ".env.example",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nHardcoded secrets/passwords. The file contains environment variables for API keys and database connection strings, which should be securely managed and not hardcoded in the source code. Remove these values and use a secure method to load them at runtime.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730329",
+            "agent": "compute",
+            "target_file": "api/notifications.py",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nThe application uses a hardcoded JWT secret key ('your-secret-key') which is insecure. This key should be stored securely and not hard-coded in the source code. To fix this, generate a secure random secret key and store it in an environment variable or a secure vault.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730319",
+            "agent": "devops",
+            "target_file": ".env.example",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nHardcoded secrets/passwords. The file contains environment variables for API keys and database connection strings, which should be securely managed and not hardcoded in the source code. Remove these values and use a secure method to load them at runtime.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730317",
+            "agent": "compute",
+            "target_file": "api/notifications.py",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nThe application uses a hardcoded JWT secret key ('your-secret-key') which is insecure. This key should be stored securely and not hard-coded in the source code. To patch this, generate a strong random secret key and store it in an environment variable or a secure vault.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730314",
+            "agent": "compute",
+            "target_file": "main.py",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nThe application allows all origins for CORS (CORSMiddleware with allow_origins=['*']). This can lead to open CORS vulnerabilities, allowing malicious websites to make cross-origin requests and potentially access sensitive data. To fix this, restrict the allowed origins to a specific list of trusted domains.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        },
+        {
+            "id": "SEC-BUG-1784730312",
+            "agent": "compute",
+            "target_file": "main.py",
+            "description": "[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\nThe application allows all origins for CORS (CORSMiddleware with allow_origins=['*']). This can lead to open CORS vulnerabilities, allowing malicious websites to make requests to your API. To fix this, restrict the allowed origins to a specific list of trusted domains.\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+            "retries": 0
+        }
+    ],
     "in_progress": [],
     "done": [],
     "archived": [
@@ -7,986 +288,1315 @@
             "id": "UI-1",
             "agent": "frontend",
             "target_file": "app/page.tsx",
-            "description": "Create a modern, responsive Dark Mode Next.js dashboard using Tailwind CSS. The dashboard should include a sleek sidebar navigation with links to key sections such as 'Dashboard', 'Products', 'Leads', and 'Transactions'. Implement a top header with the company logo and user profile dropdown. Below the header, create a grid of 4 placeholder metric cards displaying dummy data (e.g., Total Leads, Active Transactions, Revenue Generated, etc.). Ensure all components are styled using Tailwind CSS for a clean and professional look."
+            "description": "Create a modern, responsive Dark Mode Next.js dashboard using Tailwind CSS. The dashboard should include a sleek sidebar navigation with links to key sections such as 'Dashboard', 'Products', 'Leads', and 'Transactions'. Implement a top header with the company logo and user profile dropdown. Below the header, create a grid of 4 placeholder metric cards displaying dummy data (e.g., Total Leads, Active Transactions, Revenue Generated, etc.). Ensure all components are styled using Tailwind CSS for a clean and professional look.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "COMPUTE-1",
             "agent": "compute",
             "target_file": "main.py",
-            "description": "Add the following line of code to the 'main.py' file as a fun easter egg: `import antigravity`. This should be added at an appropriate location in the codebase, ensuring it does not interfere with the main functionality."
+            "description": "Add the following line of code to the 'main.py' file as a fun easter egg: `import antigravity`. This should be added at an appropriate location in the codebase, ensuring it does not interfere with the main functionality.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "UI-1",
             "agent": "frontend",
             "target_file": "app/page.tsx",
-            "description": "Create a modern, responsive Dark Mode Next.js dashboard using Tailwind CSS. The dashboard should include a sleek sidebar navigation with links to different sections of the dashboard. Implement a top header with a brand logo and user profile icon. Design a grid layout containing 4 placeholder metric cards that display dummy data. Ensure the design is fully responsive and adapts to various screen sizes."
+            "description": "Create a modern, responsive Dark Mode Next.js dashboard using Tailwind CSS. The dashboard should include a sleek sidebar navigation with links to different sections of the dashboard. Implement a top header with a brand logo and user profile icon. Design a grid layout containing 4 placeholder metric cards that display dummy data. Ensure the design is fully responsive and adapts to various screen sizes.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-1",
             "agent": "compute",
             "target_file": "main.py",
-            "description": "Add the following line of code as a fun easter egg in your Python script: 'import antigravity'. This should be added to the main.py file."
+            "description": "Add the following line of code as a fun easter egg in your Python script: 'import antigravity'. This should be added to the main.py file.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "UI-1",
             "agent": "frontend",
             "target_file": "app/page.tsx",
-            "description": "Create a new React component for the automated notifications dashboard using Tailwind CSS. The dashboard should include sections for setting up notifications, viewing active notifications, and managing notification preferences. Ensure that the UI is responsive and follows modern design principles."
+            "description": "Create a new React component for the automated notifications dashboard using Tailwind CSS. The dashboard should include sections for setting up notifications, viewing active notifications, and managing notification preferences. Ensure that the UI is responsive and follows modern design principles.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-1",
             "agent": "compute",
             "target_file": "api/notifications.py",
-            "description": "Develop an API endpoint to handle the creation and management of automated notifications. The endpoint should allow users to specify event types, notification preferences (e.g., email, SMS), and target recipients. Implement validation for input data and ensure that the API is secure and scalable."
+            "description": "Develop an API endpoint to handle the creation and management of automated notifications. The endpoint should allow users to specify event types, notification preferences (e.g., email, SMS), and target recipients. Implement validation for input data and ensure that the API is secure and scalable.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DB-1",
             "agent": "enterprise",
             "target_file": "models/notifications.py",
-            "description": "Create a database model to store notification preferences, event logs, and delivery statuses. Ensure that the model is normalized and optimized for read and write operations. Implement data migration scripts if necessary."
+            "description": "Create a database model to store notification preferences, event logs, and delivery statuses. Ensure that the model is normalized and optimized for read and write operations. Implement data migration scripts if necessary.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DEVOPS-1",
             "agent": "devops",
             "target_file": ".env.example",
-            "description": "Add environment variables to the .env.example file for configuring notification settings, such as API keys and SMTP credentials. Ensure that these variables are securely managed and not exposed in production environments."
+            "description": "Add environment variables to the .env.example file for configuring notification settings, such as API keys and SMTP credentials. Ensure that these variables are securely managed and not exposed in production environments.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-1",
             "agent": "qa",
             "target_file": "tests/notifications.py",
-            "description": "Write unit tests for the notification API endpoints to ensure they handle various scenarios correctly. Include tests for creating, updating, and deleting notifications, as well as testing notification delivery mechanisms. Ensure that all tests are automated and can be run locally."
+            "description": "Write unit tests for the notification API endpoints to ensure they handle various scenarios correctly. Include tests for creating, updating, and deleting notifications, as well as testing notification delivery mechanisms. Ensure that all tests are automated and can be run locally.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "UI-1",
             "agent": "frontend",
             "target_file": "app/page.tsx",
-            "description": "Add a 'Quick Export' button to the product catalog page. The button should be located in the top right corner of the page, next to the search bar. When clicked, it should open a modal dialog with a list of top-scoring leads for the selected product. Each lead should have an option to initiate a new transaction."
+            "description": "Add a 'Quick Export' button to the product catalog page. The button should be located in the top right corner of the page, next to the search bar. When clicked, it should open a modal dialog with a list of top-scoring leads for the selected product. Each lead should have an option to initiate a new transaction.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-1",
             "agent": "compute",
             "target_file": "api/transactions.py",
-            "description": "Create an API endpoint that handles the creation of new transactions based on user selections from the 'Quick Export' modal. The endpoint should accept a list of lead IDs and return a confirmation message."
+            "description": "Create an API endpoint that handles the creation of new transactions based on user selections from the 'Quick Export' modal. The endpoint should accept a list of lead IDs and return a confirmation message.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-1",
             "agent": "qa",
             "target_file": "tests/quick_export_test.py",
-            "description": "Write unit tests for the new 'Quick Export' functionality. Ensure that clicking the button opens the modal, selecting leads works correctly, and initiating a transaction is handled properly."
+            "description": "Write unit tests for the new 'Quick Export' functionality. Ensure that clicking the button opens the modal, selecting leads works correctly, and initiating a transaction is handled properly.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-1",
             "agent": "compute",
             "target_file": "api/notifications.py",
-            "description": "Create an API endpoint that allows users to subscribe to notifications for specific events. The endpoint should accept a user ID, event type (e.g., 'new_lead', 'transaction_status_change', 'product_catalog_update'), and notification preferences (e.g., email, SMS). Store the subscription details in a database."
+            "description": "Create an API endpoint that allows users to subscribe to notifications for specific events. The endpoint should accept a user ID, event type (e.g., 'new_lead', 'transaction_status_change', 'product_catalog_update'), and notification preferences (e.g., email, SMS). Store the subscription details in a database.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-2",
             "agent": "compute",
             "target_file": "api/events.py",
-            "description": "Develop an API that triggers notifications based on specific events. This could be triggered by changes in the database or through external event sources. The API should call the notification service to send alerts to subscribed users."
+            "description": "Develop an API that triggers notifications based on specific events. This could be triggered by changes in the database or through external event sources. The API should call the notification service to send alerts to subscribed users.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "UI-1",
             "agent": "frontend",
             "target_file": "app/page.tsx",
-            "description": "Overwrite 'app/page.tsx' with a modern Tailwind CSS dashboard that allows users to manage their notification subscriptions. The dashboard should include options to subscribe to different types of events and configure notification preferences."
+            "description": "Overwrite 'app/page.tsx' with a modern Tailwind CSS dashboard that allows users to manage their notification subscriptions. The dashboard should include options to subscribe to different types of events and configure notification preferences.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DEVOPS-1",
             "agent": "devops",
             "target_file": ".env.example",
-            "description": "Update the '.env.example' file with new environment variables required for the notification system, such as API keys for external services or database connection strings."
+            "description": "Update the '.env.example' file with new environment variables required for the notification system, such as API keys for external services or database connection strings.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-1",
             "agent": "qa",
             "target_file": "tests/notifications.test.tsx",
-            "description": "Write unit tests and integration tests to ensure that the notification system works correctly. Test scenarios should include subscribing to different events, configuring preferences, and verifying that notifications are sent as expected."
+            "description": "Write unit tests and integration tests to ensure that the notification system works correctly. Test scenarios should include subscribing to different events, configuring preferences, and verifying that notifications are sent as expected.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "UI-1",
             "agent": "frontend",
             "target_file": "app/page.tsx",
-            "description": "Create a new React component for the automated notifications dashboard using Tailwind CSS. The dashboard should include sections for different types of events (new leads, transaction status changes, product listing updates). Each section should display a list of recent events with timestamps and relevant details. Implement pagination and filtering options to allow users to view events based on time frame or type."
+            "description": "Create a new React component for the automated notifications dashboard using Tailwind CSS. The dashboard should include sections for different types of events (new leads, transaction status changes, product listing updates). Each section should display a list of recent events with timestamps and relevant details. Implement pagination and filtering options to allow users to view events based on time frame or type.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-1",
             "agent": "compute",
             "target_file": "api/notifications.ts",
-            "description": "Develop a new API endpoint that allows users to subscribe to specific types of notifications. The endpoint should accept user preferences and store them in the database. Ensure proper error handling and validation for the input data."
+            "description": "Develop a new API endpoint that allows users to subscribe to specific types of notifications. The endpoint should accept user preferences and store them in the database. Ensure proper error handling and validation for the input data.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DB-1",
             "agent": "enterprise",
             "target_file": "models/Notification.ts",
-            "description": "Create a new model to represent notifications in the database. The model should include fields for event type, user ID, timestamp, and any relevant details. Implement necessary indexes and constraints to ensure data integrity."
+            "description": "Create a new model to represent notifications in the database. The model should include fields for event type, user ID, timestamp, and any relevant details. Implement necessary indexes and constraints to ensure data integrity.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DEVOPS-1",
             "agent": "devops",
             "target_file": ".env.example",
-            "description": "Add new environment variables to the `.env.example` file for configuring notification settings, such as API keys or database connection strings. Ensure these variables are properly documented and secure."
+            "description": "Add new environment variables to the `.env.example` file for configuring notification settings, such as API keys or database connection strings. Ensure these variables are properly documented and secure.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-1",
             "agent": "qa",
             "target_file": "tests/notifications.test.ts",
-            "description": "Write unit tests to verify the functionality of the notification system. Test cases should include scenarios for subscribing to notifications, receiving notifications, and handling errors. Ensure comprehensive coverage and proper documentation of test cases."
+            "description": "Write unit tests to verify the functionality of the notification system. Test cases should include scenarios for subscribing to notifications, receiving notifications, and handling errors. Ensure comprehensive coverage and proper documentation of test cases.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "UI-1",
             "agent": "frontend",
             "target_file": "app/page.tsx",
-            "description": "Create a new React component for the automated notifications dashboard using Tailwind CSS. The dashboard should include sections for setting up notifications, viewing active notifications, and managing notification preferences. Ensure that the UI is responsive and user-friendly."
+            "description": "Create a new React component for the automated notifications dashboard using Tailwind CSS. The dashboard should include sections for setting up notifications, viewing active notifications, and managing notification preferences. Ensure that the UI is responsive and user-friendly.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-1",
             "agent": "compute",
             "target_file": "api/notifications.py",
-            "description": "Develop an API endpoint to handle the creation and management of automated notifications. The endpoint should allow users to specify event types, notification preferences (e.g., email, SMS), and target recipients. Implement validation for input data and ensure that the API is secure."
+            "description": "Develop an API endpoint to handle the creation and management of automated notifications. The endpoint should allow users to specify event types, notification preferences (e.g., email, SMS), and target recipients. Implement validation for input data and ensure that the API is secure.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DB-1",
             "agent": "enterprise",
             "target_file": "models/notifications.py",
-            "description": "Create a database model to store notification preferences and event logs. The model should include fields for user ID, event type, notification method, and status (e.g., sent, failed). Implement appropriate indexing and constraints to optimize query performance."
+            "description": "Create a database model to store notification preferences and event logs. The model should include fields for user ID, event type, notification method, and status (e.g., sent, failed). Implement appropriate indexing and constraints to optimize query performance.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DEVOPS-1",
             "agent": "devops",
             "target_file": ".env.example",
-            "description": "Add environment variables for configuring the automated notifications feature. Include variables such as API keys, notification service URLs, and database connection strings. Ensure that these variables are securely managed and not exposed in production environments."
+            "description": "Add environment variables for configuring the automated notifications feature. Include variables such as API keys, notification service URLs, and database connection strings. Ensure that these variables are securely managed and not exposed in production environments.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-1",
             "agent": "qa",
             "target_file": "tests/notifications.py",
-            "description": "Write unit tests for the automated notifications feature to ensure that all components work as expected. Test scenarios should include creating and managing notifications, verifying notification delivery, and handling errors gracefully."
+            "description": "Write unit tests for the automated notifications feature to ensure that all components work as expected. Test scenarios should include creating and managing notifications, verifying notification delivery, and handling errors gracefully.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-1",
             "agent": "compute",
             "target_file": "api/alerts.py",
-            "description": "Implement an API endpoint that allows users to create, update, and delete automated alerts based on product categories or regions. The endpoint should accept JSON payloads with the following structure: {\"user_id\": \"string\", \"alert_name\": \"string\", \"category\": \"string\", \"region\": \"string\"}. Ensure proper validation and error handling."
+            "description": "Implement an API endpoint that allows users to create, update, and delete automated alerts based on product categories or regions. The endpoint should accept JSON payloads with the following structure: {\"user_id\": \"string\", \"alert_name\": \"string\", \"category\": \"string\", \"region\": \"string\"}. Ensure proper validation and error handling.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DB-1",
             "agent": "enterprise",
             "target_file": "db/migrations/002_create_alerts_table.py",
-            "description": "Create a new database table named 'alerts' with the following columns: id (primary key), user_id, alert_name, category, region, created_at, updated_at. Ensure the table is properly indexed for efficient querying."
+            "description": "Create a new database table named 'alerts' with the following columns: id (primary key), user_id, alert_name, category, region, created_at, updated_at. Ensure the table is properly indexed for efficient querying.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "FRONTEND-1",
             "agent": "frontend",
             "target_file": "app/page.tsx",
-            "description": "Overwrite 'app/page.tsx' with a modern Tailwind CSS dashboard that includes sections for creating, updating, and deleting alerts. The dashboard should display a list of all alerts associated with the logged-in user and provide forms for setting up new alerts."
+            "description": "Overwrite 'app/page.tsx' with a modern Tailwind CSS dashboard that includes sections for creating, updating, and deleting alerts. The dashboard should display a list of all alerts associated with the logged-in user and provide forms for setting up new alerts.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "FRONTEND-2",
             "agent": "frontend",
             "target_file": "app/components/AlertForm.tsx",
-            "description": "Create a reusable component named 'AlertForm' that can be used to create and update alerts. The form should include input fields for alert name, category, and region, along with validation logic."
+            "description": "Create a reusable component named 'AlertForm' that can be used to create and update alerts. The form should include input fields for alert name, category, and region, along with validation logic.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "FRONTEND-3",
             "agent": "frontend",
             "target_file": "app/hooks/useAlerts.tsx",
-            "description": "Create a custom hook named 'useAlerts' that fetches the list of alerts associated with the logged-in user from the backend API and provides functions for creating, updating, and deleting alerts."
+            "description": "Create a custom hook named 'useAlerts' that fetches the list of alerts associated with the logged-in user from the backend API and provides functions for creating, updating, and deleting alerts.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-1",
             "agent": "qa",
             "target_file": "tests/alerts.test.tsx",
-            "description": "Write unit tests for the 'AlertForm' component to ensure it renders correctly and handles form submissions properly. Also, write integration tests to verify that creating, updating, and deleting alerts works as expected through the API."
+            "description": "Write unit tests for the 'AlertForm' component to ensure it renders correctly and handles form submissions properly. Also, write integration tests to verify that creating, updating, and deleting alerts works as expected through the API.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "UI-1",
             "agent": "frontend",
             "target_file": "app/page.tsx",
-            "description": "Create a new React component for the automated notifications dashboard using Tailwind CSS. The dashboard should include sections for different types of events (new leads, transaction status changes, product catalog updates). Each section should display a list of recent events with timestamps and relevant details. Implement pagination and filtering options to allow users to view events based on time range or event type."
+            "description": "Create a new React component for the automated notifications dashboard using Tailwind CSS. The dashboard should include sections for different types of events (new leads, transaction status changes, product catalog updates). Each section should display a list of recent events with timestamps and relevant details. Implement pagination and filtering options to allow users to view events based on time range or event type.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-1",
             "agent": "compute",
             "target_file": "api/notifications.py",
-            "description": "Develop a new API endpoint that allows users to subscribe to specific types of notifications. The endpoint should accept user preferences and store them in the database. Ensure proper error handling and validation for input data."
+            "description": "Develop a new API endpoint that allows users to subscribe to specific types of notifications. The endpoint should accept user preferences and store them in the database. Ensure proper error handling and validation for input data.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-2",
             "agent": "compute",
             "target_file": "api/events.py",
-            "description": "Create an API that triggers notifications based on specific events (new leads, transaction status changes, product catalog updates). The API should be designed to be called from other parts of the system when relevant events occur. Implement logging and monitoring for notification delivery attempts."
+            "description": "Create an API that triggers notifications based on specific events (new leads, transaction status changes, product catalog updates). The API should be designed to be called from other parts of the system when relevant events occur. Implement logging and monitoring for notification delivery attempts.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DB-1",
             "agent": "enterprise",
             "target_file": "models.py",
-            "description": "Add new database models to store user preferences for notifications and event logs. Ensure the models are properly normalized and include appropriate indexes for efficient querying. Implement data migrations if necessary."
+            "description": "Add new database models to store user preferences for notifications and event logs. Ensure the models are properly normalized and include appropriate indexes for efficient querying. Implement data migrations if necessary.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DEVOPS-1",
             "agent": "devops",
             "target_file": ".env.example",
-            "description": "Update the environment variable file to include new variables related to notification settings, such as API keys and event thresholds. Ensure all sensitive information is securely stored and accessed."
+            "description": "Update the environment variable file to include new variables related to notification settings, such as API keys and event thresholds. Ensure all sensitive information is securely stored and accessed.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-1",
             "agent": "qa",
             "target_file": "tests/notifications.py",
-            "description": "Write unit tests for the new notification system to ensure that subscriptions are handled correctly, events trigger notifications as expected, and error handling is robust. Include edge cases such as invalid user inputs or failed API calls."
+            "description": "Write unit tests for the new notification system to ensure that subscriptions are handled correctly, events trigger notifications as expected, and error handling is robust. Include edge cases such as invalid user inputs or failed API calls.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-1",
             "agent": "compute",
             "target_file": "api/notifications.py",
-            "description": "Implement an API endpoint that allows users to subscribe to notifications for specific events. The endpoint should accept a user ID, event type (e.g., 'new_lead', 'transaction_status_change', 'product_update'), and notification preferences (e.g., email, SMS). Store the subscription details in a database."
+            "description": "Implement an API endpoint that allows users to subscribe to notifications for specific events. The endpoint should accept a user ID, event type (e.g., 'new_lead', 'transaction_status_change', 'product_update'), and notification preferences (e.g., email, SMS). Store the subscription details in a database.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-2",
             "agent": "compute",
             "target_file": "api/events.py",
-            "description": "Create an API endpoint that triggers notifications for specific events. The endpoint should accept event data and send notifications to subscribed users based on their preferences. Use the appropriate notification service (e.g., Twilio for SMS, SendGrid for email)."
+            "description": "Create an API endpoint that triggers notifications for specific events. The endpoint should accept event data and send notifications to subscribed users based on their preferences. Use the appropriate notification service (e.g., Twilio for SMS, SendGrid for email).",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "UI-1",
             "agent": "frontend",
             "target_file": "app/page.tsx",
-            "description": "Overwrite 'app/page.tsx' with a modern Tailwind CSS dashboard that allows users to manage their notification subscriptions. The dashboard should include options to subscribe to different event types and configure notification preferences (e.g., email, SMS). Implement real-time updates using WebSockets or Server-Sent Events."
+            "description": "Overwrite 'app/page.tsx' with a modern Tailwind CSS dashboard that allows users to manage their notification subscriptions. The dashboard should include options to subscribe to different event types and configure notification preferences (e.g., email, SMS). Implement real-time updates using WebSockets or Server-Sent Events.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-1",
             "agent": "qa",
             "target_file": "api/notifications.py",
-            "description": "Write unit tests for the notification API endpoints to ensure they handle subscriptions and event triggers correctly. Test various scenarios, including edge cases (e.g., invalid user IDs, unsupported event types)."
+            "description": "Write unit tests for the notification API endpoints to ensure they handle subscriptions and event triggers correctly. Test various scenarios, including edge cases (e.g., invalid user IDs, unsupported event types).",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-2",
             "agent": "qa",
             "target_file": "app/page.tsx",
-            "description": "Conduct UI testing for the notification management dashboard to ensure it is functional and user-friendly. Test all features, including subscribing to events, configuring preferences, and receiving notifications. Verify that real-time updates are working as expected."
+            "description": "Conduct UI testing for the notification management dashboard to ensure it is functional and user-friendly. Test all features, including subscribing to events, configuring preferences, and receiving notifications. Verify that real-time updates are working as expected.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-1",
             "agent": "compute",
             "target_file": "api/notifications.py",
-            "description": "Implement an API endpoint that allows users to subscribe to notifications for specific events. The endpoint should accept a user ID, event type (e.g., 'new_lead', 'transaction_status_change', 'product_catalog_update'), and notification preferences (e.g., email, SMS). Store the subscription details in a database."
+            "description": "Implement an API endpoint that allows users to subscribe to notifications for specific events. The endpoint should accept a user ID, event type (e.g., 'new_lead', 'transaction_status_change', 'product_catalog_update'), and notification preferences (e.g., email, SMS). Store the subscription details in a database.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-2",
             "agent": "compute",
             "target_file": "api/events.py",
-            "description": "Create an API endpoint that triggers notifications for specific events. The endpoint should accept event data and send notifications to subscribed users based on their preferences. Use the appropriate notification service (e.g., Twilio for SMS, SendGrid for email)."
+            "description": "Create an API endpoint that triggers notifications for specific events. The endpoint should accept event data and send notifications to subscribed users based on their preferences. Use the appropriate notification service (e.g., Twilio for SMS, SendGrid for email).",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "UI-1",
             "agent": "frontend",
             "target_file": "app/page.tsx",
-            "description": "Overwrite 'app/page.tsx' with a modern Tailwind CSS dashboard that allows users to manage their notification subscriptions. The dashboard should include sections for subscribing to different event types and configuring notification preferences (e.g., email, SMS). Implement form validation and error handling."
+            "description": "Overwrite 'app/page.tsx' with a modern Tailwind CSS dashboard that allows users to manage their notification subscriptions. The dashboard should include sections for subscribing to different event types and configuring notification preferences (e.g., email, SMS). Implement form validation and error handling.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DB-1",
             "agent": "enterprise",
             "target_file": "database/schema.sql",
-            "description": "Update the database schema to include tables for storing user subscriptions and event notifications. Ensure that the schema is normalized and optimized for performance."
+            "description": "Update the database schema to include tables for storing user subscriptions and event notifications. Ensure that the schema is normalized and optimized for performance.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-1",
             "agent": "qa",
             "target_file": "tests/notifications_test.py",
-            "description": "Write unit tests for the notification API endpoints to ensure they handle various scenarios correctly, including edge cases. Test both successful and failed subscription requests."
+            "description": "Write unit tests for the notification API endpoints to ensure they handle various scenarios correctly, including edge cases. Test both successful and failed subscription requests.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-2",
             "agent": "qa",
             "target_file": "tests/ui/notifications_ui_test.py",
-            "description": "Write UI tests for the notification management dashboard to ensure it functions correctly. Test all features, including subscribing to events and configuring preferences."
+            "description": "Write UI tests for the notification management dashboard to ensure it functions correctly. Test all features, including subscribing to events and configuring preferences.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-1",
             "agent": "compute",
             "target_file": "api/notifications.py",
-            "description": "Implement an API endpoint that allows users to subscribe to transaction milestones. The endpoint should accept user ID, milestone type (e.g., 'lead_contacted', 'contract_initiated'), and notification preferences (e.g., email, SMS). Store the subscription details in a database."
+            "description": "Implement an API endpoint that allows users to subscribe to transaction milestones. The endpoint should accept user ID, milestone type (e.g., 'lead_contacted', 'contract_initiated'), and notification preferences (e.g., email, SMS). Store the subscription details in a database.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-2",
             "agent": "compute",
             "target_file": "api/notifications.py",
-            "description": "Create an API endpoint to send notifications based on subscribed milestones. The endpoint should check for new transactions that match the user's subscriptions and trigger the appropriate notification method (e.g., email, SMS)."
+            "description": "Create an API endpoint to send notifications based on subscribed milestones. The endpoint should check for new transactions that match the user's subscriptions and trigger the appropriate notification method (e.g., email, SMS).",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DB-1",
             "agent": "enterprise",
             "target_file": "models/subscription.py",
-            "description": "Design a database model to store user notifications subscriptions. The model should include fields for user ID, milestone type, and notification preferences."
+            "description": "Design a database model to store user notifications subscriptions. The model should include fields for user ID, milestone type, and notification preferences.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "UI-1",
             "agent": "frontend",
             "target_file": "app/page.tsx",
-            "description": "Overwrite the current 'app/page.tsx' file with a modern Tailwind CSS dashboard. The dashboard should include sections for managing subscriptions, viewing recent notifications, and setting up new notification preferences."
+            "description": "Overwrite the current 'app/page.tsx' file with a modern Tailwind CSS dashboard. The dashboard should include sections for managing subscriptions, viewing recent notifications, and setting up new notification preferences.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "UI-2",
             "agent": "frontend",
             "target_file": "components/NotificationForm.tsx",
-            "description": "Create a React component named 'NotificationForm' that allows users to add or update their subscription preferences. The form should include fields for milestone type and notification method."
+            "description": "Create a React component named 'NotificationForm' that allows users to add or update their subscription preferences. The form should include fields for milestone type and notification method.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "UI-3",
             "agent": "frontend",
             "target_file": "components/NotificationList.tsx",
-            "description": "Create a React component named 'NotificationList' that displays the user's recent notifications. The list should include details such as milestone type, timestamp, and notification method."
+            "description": "Create a React component named 'NotificationList' that displays the user's recent notifications. The list should include details such as milestone type, timestamp, and notification method.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-1",
             "agent": "qa",
             "target_file": "api/notifications.py",
-            "description": "Write unit tests for the 'API-1' and 'API-2' endpoints to ensure they correctly handle subscription storage and notification triggering. Include edge cases such as invalid user IDs or empty milestone types."
+            "description": "Write unit tests for the 'API-1' and 'API-2' endpoints to ensure they correctly handle subscription storage and notification triggering. Include edge cases such as invalid user IDs or empty milestone types.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-2",
             "agent": "qa",
             "target_file": "app/page.tsx",
-            "description": "Perform UI testing on the 'app/page.tsx' file to ensure that the dashboard, form, and list components function correctly. Verify that users can add, update, and view their notification subscriptions."
+            "description": "Perform UI testing on the 'app/page.tsx' file to ensure that the dashboard, form, and list components function correctly. Verify that users can add, update, and view their notification subscriptions.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "UI-1",
             "agent": "frontend",
             "target_file": "app/page.tsx",
-            "description": "Create a new React component for the automated notifications dashboard using Tailwind CSS. The dashboard should include sections for setting up notifications, viewing active notifications, and managing notification preferences. Ensure that the UI is responsive and follows modern design principles."
+            "description": "Create a new React component for the automated notifications dashboard using Tailwind CSS. The dashboard should include sections for setting up notifications, viewing active notifications, and managing notification preferences. Ensure that the UI is responsive and follows modern design principles.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-1",
             "agent": "compute",
             "target_file": "api/notifications.py",
-            "description": "Develop an API endpoint to handle the creation and management of automated notifications. The endpoint should allow users to specify event types, notification preferences (e.g., email, SMS), and target recipients. Implement validation for input data and ensure that the API is secure and scalable."
+            "description": "Develop an API endpoint to handle the creation and management of automated notifications. The endpoint should allow users to specify event types, notification preferences (e.g., email, SMS), and target recipients. Implement validation for input data and ensure that the API is secure and scalable.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DB-1",
             "agent": "enterprise",
             "target_file": "models/notifications.py",
-            "description": "Design and implement a database schema to store notification preferences, event logs, and delivery statuses. Ensure that the schema supports efficient querying and indexing for quick retrieval of user preferences and recent notifications."
+            "description": "Design and implement a database schema to store notification preferences, event logs, and delivery statuses. Ensure that the schema supports efficient querying and indexing for quick retrieval of user preferences and recent notifications.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DEVOPS-1",
             "agent": "devops",
             "target_file": ".env.example",
-            "description": "Add environment variables to the `.env.example` file for configuring notification settings, such as API keys for email or SMS services. Ensure that these variables are securely managed and not exposed in production environments."
+            "description": "Add environment variables to the `.env.example` file for configuring notification settings, such as API keys for email or SMS services. Ensure that these variables are securely managed and not exposed in production environments.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-1",
             "agent": "qa",
             "target_file": "tests/notifications.py",
-            "description": "Write unit tests and integration tests to validate the functionality of the automated notifications feature. Test scenarios should include setting up notifications, verifying delivery, and handling errors gracefully."
+            "description": "Write unit tests and integration tests to validate the functionality of the automated notifications feature. Test scenarios should include setting up notifications, verifying delivery, and handling errors gracefully.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "UI-1",
             "agent": "frontend",
             "target_file": "app/page.tsx",
-            "description": "Create a new React component for the automated notifications dashboard using Tailwind CSS. The dashboard should include sections for setting up notifications, viewing notification history, and managing notification triggers. Ensure that the UI is responsive and user-friendly."
+            "description": "Create a new React component for the automated notifications dashboard using Tailwind CSS. The dashboard should include sections for setting up notifications, viewing notification history, and managing notification triggers. Ensure that the UI is responsive and user-friendly.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-1",
             "agent": "compute",
             "target_file": "api/notifications.py",
-            "description": "Develop a new API endpoint to handle the creation and management of automated notifications. The endpoint should allow users to specify event triggers (e.g., new leads, transaction status changes) and configure notification settings (e.g., email, SMS). Implement validation for input data and ensure that the API is secure."
+            "description": "Develop a new API endpoint to handle the creation and management of automated notifications. The endpoint should allow users to specify event triggers (e.g., new leads, transaction status changes) and configure notification settings (e.g., email, SMS). Implement validation for input data and ensure that the API is secure.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DB-1",
             "agent": "enterprise",
             "target_file": "models/notifications.py",
-            "description": "Create a new database model to store notification configurations. The model should include fields for user ID, event trigger, notification method, and any other relevant details. Ensure that the model is properly indexed for efficient querying."
+            "description": "Create a new database model to store notification configurations. The model should include fields for user ID, event trigger, notification method, and any other relevant details. Ensure that the model is properly indexed for efficient querying.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DEVOPS-1",
             "agent": "devops",
             "target_file": ".env.example",
-            "description": "Add environment variables to the `.env.example` file for configuring notification settings, such as email credentials and SMS API keys. Ensure that these variables are securely managed and not exposed in production environments."
+            "description": "Add environment variables to the `.env.example` file for configuring notification settings, such as email credentials and SMS API keys. Ensure that these variables are securely managed and not exposed in production environments.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-1",
             "agent": "qa",
             "target_file": "tests/notifications.py",
-            "description": "Write unit tests for the notification API endpoint to ensure that it handles various scenarios correctly, including edge cases. Test both successful and failed requests to validate the functionality of the notification system."
+            "description": "Write unit tests for the notification API endpoint to ensure that it handles various scenarios correctly, including edge cases. Test both successful and failed requests to validate the functionality of the notification system.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "UI-1",
             "agent": "frontend",
             "target_file": "app/page.tsx",
-            "description": "Create a new React component for the automated notifications dashboard using Tailwind CSS. The dashboard should include sections for setting up notifications, viewing active notifications, and managing notification preferences. Ensure that the UI is responsive and follows modern design principles."
+            "description": "Create a new React component for the automated notifications dashboard using Tailwind CSS. The dashboard should include sections for setting up notifications, viewing active notifications, and managing notification preferences. Ensure that the UI is responsive and follows modern design principles.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-1",
             "agent": "compute",
             "target_file": "api/notifications.py",
-            "description": "Develop a new API endpoint to handle the creation and management of automated notifications. The endpoint should allow users to specify event types, notification preferences (e.g., email, SMS), and target recipients. Implement validation for input data and ensure that the API is secure and scalable."
+            "description": "Develop a new API endpoint to handle the creation and management of automated notifications. The endpoint should allow users to specify event types, notification preferences (e.g., email, SMS), and target recipients. Implement validation for input data and ensure that the API is secure and scalable.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DB-1",
             "agent": "enterprise",
             "target_file": "models/notifications.py",
-            "description": "Create a new database model to store information about automated notifications, including event types, preferences, and recipient details. Ensure that the model is optimized for read and write operations and includes appropriate indexing."
+            "description": "Create a new database model to store information about automated notifications, including event types, preferences, and recipient details. Ensure that the model is optimized for read and write operations and includes appropriate indexing.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DEVOPS-1",
             "agent": "devops",
             "target_file": ".env.example",
-            "description": "Update the environment variable file to include new variables related to automated notifications, such as API keys, notification thresholds, and retry mechanisms. Ensure that the variables are well-documented and follow best practices for security."
+            "description": "Update the environment variable file to include new variables related to automated notifications, such as API keys, notification thresholds, and retry mechanisms. Ensure that the variables are well-documented and follow best practices for security.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-1",
             "agent": "qa",
             "target_file": "tests/notifications.py",
-            "description": "Write unit tests and integration tests to verify the functionality of the automated notifications feature. Test scenarios should include creating new notifications, updating existing ones, and verifying that notifications are sent as expected. Ensure that all tests cover edge cases and error handling."
+            "description": "Write unit tests and integration tests to verify the functionality of the automated notifications feature. Test scenarios should include creating new notifications, updating existing ones, and verifying that notifications are sent as expected. Ensure that all tests cover edge cases and error handling.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-1",
             "agent": "compute",
             "target_file": "api/notifications.py",
-            "description": "Create an API endpoint that allows users to subscribe to notifications for specific events. The endpoint should accept a user ID, event type (e.g., 'new_lead', 'transaction_status_change', 'product_update'), and notification preferences (e.g., email, SMS). Store the subscription details in a database."
+            "description": "Create an API endpoint that allows users to subscribe to notifications for specific events. The endpoint should accept a user ID, event type (e.g., 'new_lead', 'transaction_status_change', 'product_update'), and notification preferences (e.g., email, SMS). Store the subscription details in a database.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-2",
             "agent": "compute",
             "target_file": "api/events.py",
-            "description": "Create an API endpoint that triggers notifications for specific events. The endpoint should accept event data and send notifications to subscribed users based on their preferences. Use the appropriate notification service (e.g., Twilio for SMS, SendGrid for email)."
+            "description": "Create an API endpoint that triggers notifications for specific events. The endpoint should accept event data and send notifications to subscribed users based on their preferences. Use the appropriate notification service (e.g., Twilio for SMS, SendGrid for email).",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "UI-1",
             "agent": "frontend",
             "target_file": "app/page.tsx",
-            "description": "Overwrite 'app/page.tsx' with a modern Tailwind CSS dashboard that allows users to set up automated notifications. The dashboard should include sections for different types of events (e.g., New Leads, Transaction Status Changes, Product Updates) and options for notification preferences (e.g., email, SMS). Implement form validation and error handling."
+            "description": "Overwrite 'app/page.tsx' with a modern Tailwind CSS dashboard that allows users to set up automated notifications. The dashboard should include sections for different types of events (e.g., New Leads, Transaction Status Changes, Product Updates) and options for notification preferences (e.g., email, SMS). Implement form validation and error handling.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-1",
             "agent": "qa",
             "target_file": "tests/notifications.test.tsx",
-            "description": "Write unit tests for the notification API endpoints. Ensure that subscriptions are stored correctly in the database and that notifications are sent as expected when events occur."
+            "description": "Write unit tests for the notification API endpoints. Ensure that subscriptions are stored correctly in the database and that notifications are sent as expected when events occur.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-1",
             "agent": "compute",
             "target_file": "api/notifications.py",
-            "description": "Create an API endpoint that allows users to subscribe to notifications for specific events. The endpoint should accept a user ID, event type (e.g., 'new_lead', 'transaction_status_change', 'product_update'), and notification preferences (e.g., email, SMS). Store the subscription details in a database table named `user_subscriptions` with columns: `id`, `user_id`, `event_type`, `notification_method`. Ensure proper error handling and validation."
+            "description": "Create an API endpoint that allows users to subscribe to notifications for specific events. The endpoint should accept a user ID, event type (e.g., 'new_lead', 'transaction_status_change', 'product_update'), and notification preferences (e.g., email, SMS). Store the subscription details in a database table named `user_subscriptions` with columns: `id`, `user_id`, `event_type`, `notification_method`. Ensure proper error handling and validation.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-2",
             "agent": "compute",
             "target_file": "api/events.py",
-            "description": "Develop an API endpoint that triggers notifications based on specific events. The endpoint should accept event data (e.g., new lead details, transaction status update) and notify subscribed users via the methods specified in their subscriptions. Use a background task queue like Celery to handle asynchronous notification delivery."
+            "description": "Develop an API endpoint that triggers notifications based on specific events. The endpoint should accept event data (e.g., new lead details, transaction status update) and notify subscribed users via the methods specified in their subscriptions. Use a background task queue like Celery to handle asynchronous notification delivery.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "UI-1",
             "agent": "frontend",
             "target_file": "app/page.tsx",
-            "description": "Overwrite `app/page.tsx` with a modern Tailwind CSS dashboard that allows users to manage their notification subscriptions. The dashboard should include the following features: a list of available events, a form for subscribing to notifications, and a section to view active subscriptions. Ensure the UI is responsive and user-friendly."
+            "description": "Overwrite `app/page.tsx` with a modern Tailwind CSS dashboard that allows users to manage their notification subscriptions. The dashboard should include the following features: a list of available events, a form for subscribing to notifications, and a section to view active subscriptions. Ensure the UI is responsive and user-friendly.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DB-1",
             "agent": "enterprise",
             "target_file": "db/migrations/002_create_user_subscriptions_table.py",
-            "description": "Create a database migration script that adds a new table named `user_subscriptions` with the following columns: `id` (primary key), `user_id` (foreign key referencing users), `event_type`, and `notification_method`. Ensure proper indexing for efficient querying."
+            "description": "Create a database migration script that adds a new table named `user_subscriptions` with the following columns: `id` (primary key), `user_id` (foreign key referencing users), `event_type`, and `notification_method`. Ensure proper indexing for efficient querying.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-1",
             "agent": "qa",
             "target_file": "tests/api/test_notifications.py",
-            "description": "Write unit tests to verify the functionality of the notification API endpoints. Test scenarios should include subscribing to different events, triggering notifications, and verifying that users receive notifications as expected."
+            "description": "Write unit tests to verify the functionality of the notification API endpoints. Test scenarios should include subscribing to different events, triggering notifications, and verifying that users receive notifications as expected.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-1",
             "agent": "compute",
             "target_file": "api/notifications.py",
-            "description": "Create an API endpoint that allows users to subscribe to notifications for specific events. The endpoint should accept a user ID, event type (e.g., 'new_lead', 'transaction_status_change', 'product_update'), and notification preferences (e.g., email, SMS). Store the subscription details in a database."
+            "description": "Create an API endpoint that allows users to subscribe to notifications for specific events. The endpoint should accept a user ID, event type (e.g., 'new_lead', 'transaction_status_change', 'product_update'), and notification preferences (e.g., email, SMS). Store the subscription details in a database.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-2",
             "agent": "compute",
             "target_file": "api/events.py",
-            "description": "Create an API endpoint that triggers notifications for specific events. The endpoint should accept event data and send notifications to subscribed users based on their preferences. Use the appropriate notification service (e.g., Twilio for SMS, SendGrid for email)."
+            "description": "Create an API endpoint that triggers notifications for specific events. The endpoint should accept event data and send notifications to subscribed users based on their preferences. Use the appropriate notification service (e.g., Twilio for SMS, SendGrid for email).",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "UI-1",
             "agent": "frontend",
             "target_file": "app/page.tsx",
-            "description": "Overwrite 'app/page.tsx' with a modern Tailwind CSS dashboard that allows users to manage their notification subscriptions. The dashboard should include options to subscribe to different event types and configure notification preferences (e.g., email, SMS). Implement form validation and error handling."
+            "description": "Overwrite 'app/page.tsx' with a modern Tailwind CSS dashboard that allows users to manage their notification subscriptions. The dashboard should include options to subscribe to different event types and configure notification preferences (e.g., email, SMS). Implement form validation and error handling.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-1",
             "agent": "qa",
             "target_file": "api/notifications.py",
-            "description": "Write unit tests for the 'API-1' endpoint to ensure it correctly handles user subscriptions and stores them in the database. Test various scenarios, including edge cases (e.g., invalid event types, duplicate subscriptions)."
+            "description": "Write unit tests for the 'API-1' endpoint to ensure it correctly handles user subscriptions and stores them in the database. Test various scenarios, including edge cases (e.g., invalid event types, duplicate subscriptions).",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-2",
             "agent": "qa",
             "target_file": "api/events.py",
-            "description": "Write integration tests for the 'API-2' endpoint to ensure it correctly triggers notifications based on event data. Test with different notification services and verify that notifications are sent as expected."
+            "description": "Write integration tests for the 'API-2' endpoint to ensure it correctly triggers notifications based on event data. Test with different notification services and verify that notifications are sent as expected.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-3",
             "agent": "qa",
             "target_file": "app/page.tsx",
-            "description": "Write end-to-end tests for the notification management dashboard to ensure it functions correctly. Test subscribing to different event types, configuring preferences, and receiving notifications. Verify that the UI is responsive and user-friendly."
+            "description": "Write end-to-end tests for the notification management dashboard to ensure it functions correctly. Test subscribing to different event types, configuring preferences, and receiving notifications. Verify that the UI is responsive and user-friendly.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-1",
             "agent": "compute",
             "target_file": "api/notifications.py",
-            "description": "Implement an API endpoint that allows users to subscribe to notifications for specific events. The endpoint should accept a user ID, event type (e.g., 'new_lead', 'transaction_status_change', 'product_catalog_update'), and notification preferences (e.g., email, SMS). Store the subscription details in a database."
+            "description": "Implement an API endpoint that allows users to subscribe to notifications for specific events. The endpoint should accept a user ID, event type (e.g., 'new_lead', 'transaction_status_change', 'product_catalog_update'), and notification preferences (e.g., email, SMS). Store the subscription details in a database.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-2",
             "agent": "compute",
             "target_file": "api/events.py",
-            "description": "Create an API endpoint that triggers notifications for specific events. The endpoint should accept event data and send notifications to subscribed users based on their preferences. Use the appropriate notification service (e.g., Twilio for SMS, SendGrid for email)."
+            "description": "Create an API endpoint that triggers notifications for specific events. The endpoint should accept event data and send notifications to subscribed users based on their preferences. Use the appropriate notification service (e.g., Twilio for SMS, SendGrid for email).",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "UI-1",
             "agent": "frontend",
             "target_file": "app/page.tsx",
-            "description": "Overwrite 'app/page.tsx' with a modern Tailwind CSS dashboard that allows users to manage their notification subscriptions. The dashboard should include sections for subscribing to different event types and configuring notification preferences (e.g., email, SMS). Implement form validation and error handling."
+            "description": "Overwrite 'app/page.tsx' with a modern Tailwind CSS dashboard that allows users to manage their notification subscriptions. The dashboard should include sections for subscribing to different event types and configuring notification preferences (e.g., email, SMS). Implement form validation and error handling.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DB-1",
             "agent": "enterprise",
             "target_file": "db/migrations/002_notifications.sql",
-            "description": "Create a database migration to add tables for storing notification subscriptions and event data. The 'notifications' table should include columns for user ID, event type, and notification preferences. The 'events' table should include columns for event ID, event type, and event details."
+            "description": "Create a database migration to add tables for storing notification subscriptions and event data. The 'notifications' table should include columns for user ID, event type, and notification preferences. The 'events' table should include columns for event ID, event type, and event details.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-1",
             "agent": "qa",
             "target_file": "tests/notifications.test.py",
-            "description": "Write unit tests to ensure that the notification API endpoints are functioning correctly. Test scenarios should include subscribing users to different events, triggering notifications, and verifying that notifications are sent as expected."
+            "description": "Write unit tests to ensure that the notification API endpoints are functioning correctly. Test scenarios should include subscribing users to different events, triggering notifications, and verifying that notifications are sent as expected.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "UI-1",
             "agent": "frontend",
             "target_file": "app/page.tsx",
-            "description": "Create a new React component for the automated notifications dashboard using Tailwind CSS. The dashboard should include sections for setting up notifications, viewing active notifications, and managing notification preferences. Ensure that the UI is responsive and user-friendly."
+            "description": "Create a new React component for the automated notifications dashboard using Tailwind CSS. The dashboard should include sections for setting up notifications, viewing active notifications, and managing notification preferences. Ensure that the UI is responsive and user-friendly.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-1",
             "agent": "compute",
             "target_file": "api/notifications.py",
-            "description": "Develop a new API endpoint to handle the creation and management of automated notifications. The endpoint should allow users to specify event types, notification preferences (e.g., email, SMS), and target recipients. Implement validation for input data and ensure that the API is secure and scalable."
+            "description": "Develop a new API endpoint to handle the creation and management of automated notifications. The endpoint should allow users to specify event types, notification preferences (e.g., email, SMS), and target recipients. Implement validation for input data and ensure that the API is secure and scalable.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DB-1",
             "agent": "enterprise",
             "target_file": "models/notifications.py",
-            "description": "Create a new database model to store notification preferences, event logs, and delivery status. Ensure that the model is normalized and optimized for read and write operations. Implement data migration scripts if necessary."
+            "description": "Create a new database model to store notification preferences, event logs, and delivery status. Ensure that the model is normalized and optimized for read and write operations. Implement data migration scripts if necessary.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DEVOPS-1",
             "agent": "devops",
             "target_file": ".env.example",
-            "description": "Add new environment variables to the `.env.example` file for configuring notification settings, such as SMTP credentials and API keys. Ensure that these variables are securely managed and not exposed in production environments."
+            "description": "Add new environment variables to the `.env.example` file for configuring notification settings, such as SMTP credentials and API keys. Ensure that these variables are securely managed and not exposed in production environments.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-1",
             "agent": "qa",
             "target_file": "tests/notifications.py",
-            "description": "Write unit tests for the notification API endpoints, database models, and UI components. Ensure that all test cases cover edge cases, error handling, and performance scenarios. Use a testing framework of your choice (e.g., Jest, PyTest)."
+            "description": "Write unit tests for the notification API endpoints, database models, and UI components. Ensure that all test cases cover edge cases, error handling, and performance scenarios. Use a testing framework of your choice (e.g., Jest, PyTest).",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "UI-1",
             "agent": "frontend",
             "target_file": "app/page.tsx",
-            "description": "Create a new React component for the automated notifications dashboard using Tailwind CSS. The dashboard should include sections for setting up notifications, viewing active notifications, and managing notification preferences. Ensure that the UI is responsive and user-friendly."
+            "description": "Create a new React component for the automated notifications dashboard using Tailwind CSS. The dashboard should include sections for setting up notifications, viewing active notifications, and managing notification preferences. Ensure that the UI is responsive and user-friendly.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-1",
             "agent": "compute",
             "target_file": "api/notifications.py",
-            "description": "Develop a new API endpoint to handle the creation and management of automated notifications. The endpoint should allow users to specify event types, notification preferences (e.g., email, SMS), and target recipients. Implement validation for input data and ensure that the API is secure."
+            "description": "Develop a new API endpoint to handle the creation and management of automated notifications. The endpoint should allow users to specify event types, notification preferences (e.g., email, SMS), and target recipients. Implement validation for input data and ensure that the API is secure.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DB-1",
             "agent": "enterprise",
             "target_file": "models/notifications.py",
-            "description": "Create a new database model to store notification preferences, event logs, and delivery statuses. Ensure that the model is normalized and optimized for read and write operations."
+            "description": "Create a new database model to store notification preferences, event logs, and delivery statuses. Ensure that the model is normalized and optimized for read and write operations.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DEVOPS-1",
             "agent": "devops",
             "target_file": ".env.example",
-            "description": "Add environment variables to the .env.example file for configuring notification settings, such as email service credentials and SMS gateway API keys. Ensure that these variables are securely managed and not exposed in production environments."
+            "description": "Add environment variables to the .env.example file for configuring notification settings, such as email service credentials and SMS gateway API keys. Ensure that these variables are securely managed and not exposed in production environments.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-1",
             "agent": "qa",
             "target_file": "tests/notifications.py",
-            "description": "Write unit tests for the notification API endpoints, database models, and frontend components. Ensure that all test cases cover various scenarios, including edge cases and error handling."
+            "description": "Write unit tests for the notification API endpoints, database models, and frontend components. Ensure that all test cases cover various scenarios, including edge cases and error handling.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "UI-1",
             "agent": "frontend",
             "target_file": "app/page.tsx",
-            "description": "Create a new React component for the automated notifications dashboard using Tailwind CSS. The dashboard should include sections for setting up notifications, viewing active notifications, and managing notification preferences. Ensure that the UI is responsive and follows modern design principles."
+            "description": "Create a new React component for the automated notifications dashboard using Tailwind CSS. The dashboard should include sections for setting up notifications, viewing active notifications, and managing notification preferences. Ensure that the UI is responsive and follows modern design principles.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-1",
             "agent": "compute",
             "target_file": "api/notifications.py",
-            "description": "Develop a new API endpoint to handle the creation and management of automated notifications. The endpoint should allow users to specify event types, notification preferences (e.g., email, SMS), and target recipients. Implement validation for input data and ensure that the API is secure and scalable."
+            "description": "Develop a new API endpoint to handle the creation and management of automated notifications. The endpoint should allow users to specify event types, notification preferences (e.g., email, SMS), and target recipients. Implement validation for input data and ensure that the API is secure and scalable.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DB-1",
             "agent": "enterprise",
             "target_file": "models/notifications.py",
-            "description": "Create a new database model to store information about automated notifications, including event types, preferences, and recipient details. Ensure that the model is optimized for read and write operations and includes appropriate indexing."
+            "description": "Create a new database model to store information about automated notifications, including event types, preferences, and recipient details. Ensure that the model is optimized for read and write operations and includes appropriate indexing.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DEVOPS-1",
             "agent": "devops",
             "target_file": ".env.example",
-            "description": "Add environment variables to the `.env.example` file to configure settings related to automated notifications, such as notification service credentials and database connection strings. Ensure that these variables are securely managed and not exposed in production environments."
+            "description": "Add environment variables to the `.env.example` file to configure settings related to automated notifications, such as notification service credentials and database connection strings. Ensure that these variables are securely managed and not exposed in production environments.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-1",
             "agent": "qa",
             "target_file": "tests/notifications.py",
-            "description": "Write unit tests for the automated notifications feature, including scenarios for creating new notifications, updating preferences, and handling errors. Ensure that the tests cover both positive and negative cases to validate the functionality of the system."
+            "description": "Write unit tests for the automated notifications feature, including scenarios for creating new notifications, updating preferences, and handling errors. Ensure that the tests cover both positive and negative cases to validate the functionality of the system.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "UI-1",
             "agent": "frontend",
             "target_file": "app/page.tsx",
-            "description": "Create a new React component for the automated notifications dashboard using Tailwind CSS. The dashboard should include sections for setting up notifications, viewing active notifications, and managing notification preferences. Ensure that the UI is responsive and follows modern design principles."
+            "description": "Create a new React component for the automated notifications dashboard using Tailwind CSS. The dashboard should include sections for setting up notifications, viewing active notifications, and managing notification preferences. Ensure that the UI is responsive and follows modern design principles.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-1",
             "agent": "compute",
             "target_file": "api/notifications.py",
-            "description": "Develop a new API endpoint to handle the creation and management of automated notifications. The endpoint should allow users to specify event types, notification preferences (e.g., email, SMS), and target recipients. Implement validation for input data and ensure that the API is secure and scalable."
+            "description": "Develop a new API endpoint to handle the creation and management of automated notifications. The endpoint should allow users to specify event types, notification preferences (e.g., email, SMS), and target recipients. Implement validation for input data and ensure that the API is secure and scalable.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DB-1",
             "agent": "enterprise",
             "target_file": "models/notifications.py",
-            "description": "Create a new database model to store notification preferences, event logs, and delivery statuses. Ensure that the model is normalized and optimized for performance. Implement data migration scripts if necessary."
+            "description": "Create a new database model to store notification preferences, event logs, and delivery statuses. Ensure that the model is normalized and optimized for performance. Implement data migration scripts if necessary.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DEVOPS-1",
             "agent": "devops",
             "target_file": ".env.example",
-            "description": "Add new environment variables to the `.env.example` file for configuring notification settings, such as API keys and SMTP credentials. Ensure that these variables are securely managed and not exposed in production environments."
+            "description": "Add new environment variables to the `.env.example` file for configuring notification settings, such as API keys and SMTP credentials. Ensure that these variables are securely managed and not exposed in production environments.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-1",
             "agent": "qa",
             "target_file": "tests/notifications.py",
-            "description": "Write unit tests for the notification API endpoints to ensure they handle various scenarios correctly. Include tests for creating, updating, and deleting notifications, as well as testing notification delivery mechanisms. Ensure that all tests are automated and can be run locally."
+            "description": "Write unit tests for the notification API endpoints to ensure they handle various scenarios correctly. Include tests for creating, updating, and deleting notifications, as well as testing notification delivery mechanisms. Ensure that all tests are automated and can be run locally.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-1",
             "agent": "compute",
             "target_file": "api/notifications.py",
-            "description": "Create an API endpoint that allows users to subscribe to notifications for specific events. The endpoint should accept a user ID, event type (e.g., 'new_lead', 'transaction_status_change', 'product_update'), and notification preferences (e.g., email, SMS). Store the subscription details in a database."
+            "description": "Create an API endpoint that allows users to subscribe to notifications for specific events. The endpoint should accept a user ID, event type (e.g., 'new_lead', 'transaction_status_change', 'product_update'), and notification preferences (e.g., email, SMS). Store the subscription details in a database.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-2",
             "agent": "compute",
             "target_file": "api/events.py",
-            "description": "Create an API endpoint that triggers notifications for specific events. The endpoint should accept event data and notify subscribed users based on their preferences. Use the appropriate notification service (e.g., Twilio for SMS, SendGrid for email)."
+            "description": "Create an API endpoint that triggers notifications for specific events. The endpoint should accept event data and notify subscribed users based on their preferences. Use the appropriate notification service (e.g., Twilio for SMS, SendGrid for email).",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "UI-1",
             "agent": "frontend",
             "target_file": "app/page.tsx",
-            "description": "Overwrite 'app/page.tsx' with a modern Tailwind CSS dashboard that allows users to set up automated notifications. The dashboard should include options for selecting event types and notification preferences (e.g., email, SMS). Ensure the UI is responsive and user-friendly."
+            "description": "Overwrite 'app/page.tsx' with a modern Tailwind CSS dashboard that allows users to set up automated notifications. The dashboard should include options for selecting event types and notification preferences (e.g., email, SMS). Ensure the UI is responsive and user-friendly.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DB-1",
             "agent": "enterprise",
             "target_file": "database/migrations/002_notifications.sql",
-            "description": "Create a database migration to add tables for storing notification subscriptions and event data. Ensure the schema is normalized and optimized for performance."
+            "description": "Create a database migration to add tables for storing notification subscriptions and event data. Ensure the schema is normalized and optimized for performance.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-1",
             "agent": "qa",
             "target_file": "compute/test_api.py",
             "description": "Write unit tests for the new API endpoints created in tasks API-1 and API-2 to ensure they handle various scenarios correctly. Include edge cases and error handling in your test suite.",
-            "retries": 2
+            "retries": 2,
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "UI-1",
             "agent": "frontend",
             "target_file": "app/page.tsx",
-            "description": "Overwrite the existing `app/page.tsx` file with a modern Tailwind CSS dashboard. The dashboard should include sections for notifications, new leads, transaction statuses, and product listings updates. Ensure that each section is clearly labeled and visually distinct."
+            "description": "Overwrite the existing `app/page.tsx` file with a modern Tailwind CSS dashboard. The dashboard should include sections for notifications, new leads, transaction statuses, and product listings updates. Ensure that each section is clearly labeled and visually distinct.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-1",
             "agent": "compute",
             "target_file": "services/NotificationService.py",
-            "description": "Create a new Python service called `NotificationService` in the `services` directory. This service should handle the logic for sending automated notifications based on specific events such as new leads, changes in transaction statuses, or updates on product listings."
+            "description": "Create a new Python service called `NotificationService` in the `services` directory. This service should handle the logic for sending automated notifications based on specific events such as new leads, changes in transaction statuses, or updates on product listings.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-2",
             "agent": "compute",
             "target_file": "models/Notification.py",
-            "description": "Define a new Python model called `Notification` in the `models` directory. This model should represent a notification with fields such as `id`, `user_id`, `event_type`, `message`, and `timestamp`. Ensure that the model is properly linked to the user through a foreign key relationship."
+            "description": "Define a new Python model called `Notification` in the `models` directory. This model should represent a notification with fields such as `id`, `user_id`, `event_type`, `message`, and `timestamp`. Ensure that the model is properly linked to the user through a foreign key relationship.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-3",
             "agent": "compute",
             "target_file": "repositories/NotificationRepository.py",
-            "description": "Create a new Python repository called `NotificationRepository` in the `repositories` directory. This repository should handle all database operations related to notifications, including creating, retrieving, updating, and deleting notifications."
+            "description": "Create a new Python repository called `NotificationRepository` in the `repositories` directory. This repository should handle all database operations related to notifications, including creating, retrieving, updating, and deleting notifications.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-4",
             "agent": "compute",
             "target_file": "endpoints/notifications.py",
-            "description": "Create new Python endpoints in the `endpoints` directory for handling notification-related requests. These endpoints should include routes for creating a new notification, retrieving notifications for a specific user, and updating the status of a notification (e.g., marking as read). Ensure that these endpoints are properly secured using JWT authentication."
+            "description": "Create new Python endpoints in the `endpoints` directory for handling notification-related requests. These endpoints should include routes for creating a new notification, retrieving notifications for a specific user, and updating the status of a notification (e.g., marking as read). Ensure that these endpoints are properly secured using JWT authentication.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-5",
             "agent": "compute",
             "target_file": "services/LeadService.py",
-            "description": "Modify the existing `LeadService` in the `services` directory to include logic for triggering notifications when new leads are discovered. Ensure that this logic is integrated with the `NotificationService` and `NotificationRepository`."
+            "description": "Modify the existing `LeadService` in the `services` directory to include logic for triggering notifications when new leads are discovered. Ensure that this logic is integrated with the `NotificationService` and `NotificationRepository`.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-6",
             "agent": "compute",
             "target_file": "services/TransactionService.py",
-            "description": "Modify the existing `TransactionService` in the `services` directory to include logic for triggering notifications when transaction statuses change. Ensure that this logic is integrated with the `NotificationService` and `NotificationRepository`."
+            "description": "Modify the existing `TransactionService` in the `services` directory to include logic for triggering notifications when transaction statuses change. Ensure that this logic is integrated with the `NotificationService` and `NotificationRepository`.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-7",
             "agent": "compute",
             "target_file": "services/ProductService.py",
-            "description": "Modify the existing `ProductService` in the `services` directory to include logic for triggering notifications when product listings are updated. Ensure that this logic is integrated with the `NotificationService` and `NotificationRepository`."
+            "description": "Modify the existing `ProductService` in the `services` directory to include logic for triggering notifications when product listings are updated. Ensure that this logic is integrated with the `NotificationService` and `NotificationRepository`.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-8",
             "agent": "devops",
             "target_file": ".env",
-            "description": "Add new environment variables to the `.env` file for configuring notification settings, such as email addresses for notifications or external notification services to use."
+            "description": "Add new environment variables to the `.env` file for configuring notification settings, such as email addresses for notifications or external notification services to use.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-1",
             "agent": "qa",
             "target_file": "tests/test_notification_service.py",
-            "description": "Create a new test file called `test_notification_service.py` in the `tests` directory. Write unit tests for the `NotificationService`, ensuring that notifications are created, retrieved, and updated correctly."
+            "description": "Create a new test file called `test_notification_service.py` in the `tests` directory. Write unit tests for the `NotificationService`, ensuring that notifications are created, retrieved, and updated correctly.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-2",
             "agent": "qa",
             "target_file": "tests/test_lead_service.py",
-            "description": "Modify the existing test file called `test_lead_service.py` in the `tests` directory to include tests for triggering notifications when new leads are discovered."
+            "description": "Modify the existing test file called `test_lead_service.py` in the `tests` directory to include tests for triggering notifications when new leads are discovered.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-3",
             "agent": "qa",
             "target_file": "tests/test_transaction_service.py",
-            "description": "Modify the existing test file called `test_transaction_service.py` in the `tests` directory to include tests for triggering notifications when transaction statuses change."
+            "description": "Modify the existing test file called `test_transaction_service.py` in the `tests` directory to include tests for triggering notifications when transaction statuses change.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-4",
             "agent": "qa",
             "target_file": "tests/test_product_service.py",
-            "description": "Modify the existing test file called `test_product_service.py` in the `tests` directory to include tests for triggering notifications when product listings are updated."
+            "description": "Modify the existing test file called `test_product_service.py` in the `tests` directory to include tests for triggering notifications when product listings are updated.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "FE-1",
             "agent": "frontend",
             "target_file": "app/page.tsx",
-            "description": "Overwrite the current `app/page.tsx` file with a modern Tailwind CSS dashboard that includes sections for setting up automated alerts. The dashboard should have intuitive forms and controls to specify criteria such as target regions, product categories, or confidence score thresholds."
+            "description": "Overwrite the current `app/page.tsx` file with a modern Tailwind CSS dashboard that includes sections for setting up automated alerts. The dashboard should have intuitive forms and controls to specify criteria such as target regions, product categories, or confidence score thresholds.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-1",
             "agent": "compute",
             "target_file": "api/v1/alerts.py",
-            "description": "Create a new API endpoint `/api/v1/alerts` that allows users to create and manage automated alerts based on specific criteria. The endpoint should accept POST requests with the following payload structure: `{ \"user_id\": \"UUID\", \"criteria\": { \"target_regions\": [\"OM\", \"CN\", \"EU\", \"AU\"], \"product_categories\": [\"Electronics\", \"Clothing\"], \"confidence_score_threshold\": 0.8 } }`. The endpoint should store the alert criteria in a new `alerts` table and trigger background jobs to check for matching leads."
+            "description": "Create a new API endpoint `/api/v1/alerts` that allows users to create and manage automated alerts based on specific criteria. The endpoint should accept POST requests with the following payload structure: `{ \"user_id\": \"UUID\", \"criteria\": { \"target_regions\": [\"OM\", \"CN\", \"EU\", \"AU\"], \"product_categories\": [\"Electronics\", \"Clothing\"], \"confidence_score_threshold\": 0.8 } }`. The endpoint should store the alert criteria in a new `alerts` table and trigger background jobs to check for matching leads.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DB-1",
             "agent": "enterprise",
             "target_file": "models/alerts.py",
-            "description": "Add a new model `Alert` to the database schema with the following fields: `id (UUID, PRIMARY KEY)`, `user_id (UUID, FOREIGN KEY REFERENCES users(id))`, `criteria (JSONB)`, and `created_at (TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`. Ensure that the `alerts` table is properly indexed for efficient querying."
+            "description": "Add a new model `Alert` to the database schema with the following fields: `id (UUID, PRIMARY KEY)`, `user_id (UUID, FOREIGN KEY REFERENCES users(id))`, `criteria (JSONB)`, and `created_at (TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`. Ensure that the `alerts` table is properly indexed for efficient querying.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "BG-1",
             "agent": "enterprise",
             "target_file": "background_jobs/check_leads.py",
-            "description": "Create a new background job to periodically check for matching leads based on user-defined alerts. The job should query the `alerts` table, retrieve the corresponding criteria, and trigger the AI Lead Hunter engine to identify potential buyers that meet the specified conditions. When a match is found, the job should update the lead status and notify the relevant user via email or in-app notification."
+            "description": "Create a new background job to periodically check for matching leads based on user-defined alerts. The job should query the `alerts` table, retrieve the corresponding criteria, and trigger the AI Lead Hunter engine to identify potential buyers that meet the specified conditions. When a match is found, the job should update the lead status and notify the relevant user via email or in-app notification.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-1",
             "agent": "qa",
             "target_file": "tests/test_alerts.py",
-            "description": "Write unit tests for the new `/api/v1/alerts` endpoint to ensure that it correctly creates and manages automated alerts. The tests should cover various scenarios, including creating alerts with different criteria, updating existing alerts, and deleting alerts."
+            "description": "Write unit tests for the new `/api/v1/alerts` endpoint to ensure that it correctly creates and manages automated alerts. The tests should cover various scenarios, including creating alerts with different criteria, updating existing alerts, and deleting alerts.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-1",
             "agent": "compute",
             "target_file": "services/lead_alerts.py",
-            "description": "Implement a new service in the Python FastAPI compute engine to handle the creation and management of automated lead alerts. The service should allow users to set up alerts based on target regions, product categories, or confidence score thresholds."
+            "description": "Implement a new service in the Python FastAPI compute engine to handle the creation and management of automated lead alerts. The service should allow users to set up alerts based on target regions, product categories, or confidence score thresholds.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-2",
             "agent": "compute",
             "target_file": "models/lead_alert.py",
-            "description": "Create a new model in the Python FastAPI compute engine to represent an automated lead alert. The model should include fields for user ID, target regions, product categories, confidence score thresholds, and alert status."
+            "description": "Create a new model in the Python FastAPI compute engine to represent an automated lead alert. The model should include fields for user ID, target regions, product categories, confidence score thresholds, and alert status.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-3",
             "agent": "compute",
             "target_file": "endpoints/lead_alerts.py",
-            "description": "Develop new API endpoints in the Python FastAPI compute engine to allow users to create, retrieve, update, and delete automated lead alerts. Ensure that these endpoints are properly secured and return appropriate HTTP responses."
+            "description": "Develop new API endpoints in the Python FastAPI compute engine to allow users to create, retrieve, update, and delete automated lead alerts. Ensure that these endpoints are properly secured and return appropriate HTTP responses.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-4",
             "agent": "compute",
             "target_file": "services/lead_scoring.py",
-            "description": "Enhance the existing AI Lead Hunter service to include logic for evaluating leads against user-defined alert criteria. This may involve adding new NLP and historical trade data analysis functions."
+            "description": "Enhance the existing AI Lead Hunter service to include logic for evaluating leads against user-defined alert criteria. This may involve adding new NLP and historical trade data analysis functions.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-5",
             "agent": "compute",
             "target_file": "models/lead.py",
-            "description": "Update the existing lead model to include a field for associated alerts, allowing leads to be linked to multiple alert criteria."
+            "description": "Update the existing lead model to include a field for associated alerts, allowing leads to be linked to multiple alert criteria.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "UI-1",
             "agent": "frontend",
             "target_file": "app/page.tsx",
-            "description": "Overwrite the current 'app/page.tsx' file with a modern Tailwind CSS dashboard that includes a section for managing automated lead alerts. The dashboard should allow users to view, create, edit, and delete alerts based on target regions, product categories, or confidence score thresholds."
+            "description": "Overwrite the current 'app/page.tsx' file with a modern Tailwind CSS dashboard that includes a section for managing automated lead alerts. The dashboard should allow users to view, create, edit, and delete alerts based on target regions, product categories, or confidence score thresholds.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "UI-2",
             "agent": "frontend",
             "target_file": "components/AlertForm.tsx",
-            "description": "Create a new React component called 'AlertForm' that allows users to input the criteria for creating an automated lead alert. The form should include fields for target regions, product categories, and confidence score thresholds."
+            "description": "Create a new React component called 'AlertForm' that allows users to input the criteria for creating an automated lead alert. The form should include fields for target regions, product categories, and confidence score thresholds.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "UI-3",
             "agent": "frontend",
             "target_file": "components/AlertList.tsx",
-            "description": "Create a new React component called 'AlertList' that displays the list of automated lead alerts for the authenticated user. The component should include options to edit and delete each alert."
+            "description": "Create a new React component called 'AlertList' that displays the list of automated lead alerts for the authenticated user. The component should include options to edit and delete each alert.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "UI-4",
             "agent": "frontend",
             "target_file": "services/api.tsx",
-            "description": "Update the existing API service file to include new endpoints for creating, retrieving, updating, and deleting automated lead alerts. Ensure that these endpoints are properly secured and return appropriate HTTP responses."
+            "description": "Update the existing API service file to include new endpoints for creating, retrieving, updating, and deleting automated lead alerts. Ensure that these endpoints are properly secured and return appropriate HTTP responses.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "UI-5",
             "agent": "frontend",
             "target_file": "utils/hooks/useAlerts.tsx",
-            "description": "Create a new React hook called 'useAlerts' that provides access to the list of automated lead alerts for the authenticated user. The hook should include functions for creating, updating, and deleting alerts."
+            "description": "Create a new React hook called 'useAlerts' that provides access to the list of automated lead alerts for the authenticated user. The hook should include functions for creating, updating, and deleting alerts.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "UI-1",
             "agent": "frontend",
             "target_file": "app/page.tsx",
-            "description": "Overwrite the existing 'app/page.tsx' file with a modern Tailwind CSS dashboard. The dashboard should include sections for displaying real-time lead scores, conversion rates, and compliance risks. Implement filtering and sorting functionality based on confidence score, conversion rate, and compliance risk."
+            "description": "Overwrite the existing 'app/page.tsx' file with a modern Tailwind CSS dashboard. The dashboard should include sections for displaying real-time lead scores, conversion rates, and compliance risks. Implement filtering and sorting functionality based on confidence score, conversion rate, and compliance risk.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-1",
             "agent": "compute",
             "target_file": "services/leadScoringService.py",
-            "description": "Create a new service in 'services/leadScoringService.py' that calculates the real-time lead scores, conversion rates, and compliance risks. This service should interact with the 'leads' table to fetch data and apply necessary algorithms for scoring."
+            "description": "Create a new service in 'services/leadScoringService.py' that calculates the real-time lead scores, conversion rates, and compliance risks. This service should interact with the 'leads' table to fetch data and apply necessary algorithms for scoring.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-2",
             "agent": "compute",
             "target_file": "services/complianceService.py",
-            "description": "Create a new service in 'services/complianceService.py' that evaluates the compliance risk of each lead. This service should use NLP and historical trade data to assess risks and provide scores."
+            "description": "Create a new service in 'services/complianceService.py' that evaluates the compliance risk of each lead. This service should use NLP and historical trade data to assess risks and provide scores.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-3",
             "agent": "compute",
             "target_file": "models/leadScoreModel.py",
-            "description": "Define a new model in 'models/leadScoreModel.py' that represents the structure of lead score data. This model should include fields for confidence score, conversion rate, and compliance risk."
+            "description": "Define a new model in 'models/leadScoreModel.py' that represents the structure of lead score data. This model should include fields for confidence score, conversion rate, and compliance risk.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-4",
             "agent": "compute",
             "target_file": "endpoints/leadScoringEndpoints.py",
-            "description": "Create new endpoints in 'endpoints/leadScoringEndpoints.py' that expose the lead scoring data through API calls. Implement routes for fetching real-time lead scores, conversion rates, and compliance risks."
+            "description": "Create new endpoints in 'endpoints/leadScoringEndpoints.py' that expose the lead scoring data through API calls. Implement routes for fetching real-time lead scores, conversion rates, and compliance risks.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-5",
             "agent": "compute",
             "target_file": "utils/dataAggregationUtils.py",
-            "description": "Create a new utility module in 'utils/dataAggregationUtils.py' that aggregates trade metrics, active leads, and transaction statuses for the corporate dashboard. This module should interact with the database to fetch necessary data."
+            "description": "Create a new utility module in 'utils/dataAggregationUtils.py' that aggregates trade metrics, active leads, and transaction statuses for the corporate dashboard. This module should interact with the database to fetch necessary data.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-6",
             "agent": "compute",
             "target_file": "endpoints/dashboardEndpoints.py",
-            "description": "Create new endpoints in 'endpoints/dashboardEndpoints.py' that expose aggregated trade metrics, active leads, and transaction statuses through API calls. Implement routes for fetching dashboard data."
+            "description": "Create new endpoints in 'endpoints/dashboardEndpoints.py' that expose aggregated trade metrics, active leads, and transaction statuses through API calls. Implement routes for fetching dashboard data.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-1",
             "agent": "qa",
             "target_file": "tests/test_leadScoringService.py",
-            "description": "Write unit tests in 'tests/test_leadScoringService.py' to ensure the lead scoring service functions correctly. Test various scenarios, including edge cases and performance under load."
+            "description": "Write unit tests in 'tests/test_leadScoringService.py' to ensure the lead scoring service functions correctly. Test various scenarios, including edge cases and performance under load.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-2",
             "agent": "qa",
             "target_file": "tests/test_complianceService.py",
-            "description": "Write unit tests in 'tests/test_complianceService.py' to ensure the compliance service functions correctly. Test various scenarios, including edge cases and performance under load."
+            "description": "Write unit tests in 'tests/test_complianceService.py' to ensure the compliance service functions correctly. Test various scenarios, including edge cases and performance under load.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-3",
             "agent": "qa",
             "target_file": "tests/test_dataAggregationUtils.py",
-            "description": "Write unit tests in 'tests/test_dataAggregationUtils.py' to ensure the data aggregation utility functions correctly. Test various scenarios, including edge cases and performance under load."
+            "description": "Write unit tests in 'tests/test_dataAggregationUtils.py' to ensure the data aggregation utility functions correctly. Test various scenarios, including edge cases and performance under load.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "FE-1",
             "agent": "frontend",
             "target_file": "app/page.tsx",
-            "description": "Overwrite the existing `app/page.tsx` file with a modern Tailwind CSS dashboard that includes sections for lead status changes, notifications, and a summary of active leads. Ensure the dashboard is responsive and user-friendly."
+            "description": "Overwrite the existing `app/page.tsx` file with a modern Tailwind CSS dashboard that includes sections for lead status changes, notifications, and a summary of active leads. Ensure the dashboard is responsive and user-friendly.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-1",
             "agent": "compute",
             "target_file": "services/leadNotificationService.py",
-            "description": "Create a new Python service in `services/leadNotificationService.py` that handles the logic for sending automated notifications when a lead status changes. The service should interact with the database to fetch lead data and use an external notification service (e.g., Twilio, Email) to send updates."
+            "description": "Create a new Python service in `services/leadNotificationService.py` that handles the logic for sending automated notifications when a lead status changes. The service should interact with the database to fetch lead data and use an external notification service (e.g., Twilio, Email) to send updates.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-2",
             "agent": "compute",
             "target_file": "models/Notification.py",
-            "description": "Define a new Python model in `models/Notification.py` that represents the notification data structure. The model should include fields for lead ID, exporter ID, notification type (e.g., 'CONTACTED', 'CONVERTED'), and timestamp."
+            "description": "Define a new Python model in `models/Notification.py` that represents the notification data structure. The model should include fields for lead ID, exporter ID, notification type (e.g., 'CONTACTED', 'CONVERTED'), and timestamp.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "API-3",
             "agent": "compute",
             "target_file": "routes/notifications.py",
-            "description": "Create a new FastAPI route in `routes/notifications.py` that allows exporters to subscribe to lead status change notifications. The route should handle POST requests with the exporter ID and return a confirmation message."
+            "description": "Create a new FastAPI route in `routes/notifications.py` that allows exporters to subscribe to lead status change notifications. The route should handle POST requests with the exporter ID and return a confirmation message.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DB-1",
             "agent": "enterprise",
             "target_file": "migrations/versions/add_notification_table.py",
-            "description": "Generate a new database migration script in `migrations/versions/add_notification_table.py` that adds a new table for storing notification data. The table should include columns for lead ID, exporter ID, notification type, and timestamp."
+            "description": "Generate a new database migration script in `migrations/versions/add_notification_table.py` that adds a new table for storing notification data. The table should include columns for lead ID, exporter ID, notification type, and timestamp.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DB-2",
             "agent": "enterprise",
             "target_file": "models/Notification.py",
-            "description": "Define a new Python model in `models/Notification.py` that represents the notification data structure. The model should include fields for lead ID, exporter ID, notification type, and timestamp."
+            "description": "Define a new Python model in `models/Notification.py` that represents the notification data structure. The model should include fields for lead ID, exporter ID, notification type, and timestamp.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "DB-3",
             "agent": "enterprise",
             "target_file": "services/leadService.py",
-            "description": "Update the existing `services/leadService.py` file to include a method that triggers notifications when a lead status changes. The method should interact with the notification service and update the database accordingly."
+            "description": "Update the existing `services/leadService.py` file to include a method that triggers notifications when a lead status changes. The method should interact with the notification service and update the database accordingly.",
+            "documented": true,
+            "secops_scanned": true
         },
         {
             "id": "QA-1",
             "agent": "qa",
             "target_file": "tests/test_notification_service.py",
-            "description": "Write unit tests in `tests/test_notification_service.py` to ensure that the notification service handles lead status changes correctly. The tests should cover scenarios for different notification types and verify that notifications are sent as expected."
+            "description": "Write unit tests in `tests/test_notification_service.py` to ensure that the notification service handles lead status changes correctly. The tests should cover scenarios for different notification types and verify that notifications are sent as expected.",
+            "documented": true,
+            "secops_scanned": true
         }
-    ]
+    ],
+    "in_review": []
 }
