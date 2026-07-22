@@ -1,10 +1,12 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity
+import os
+import secrets
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///notifications.db'
-app.config['JWT_SECRET_KEY'] = 'your-secret-key'  # Change this!
+app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', secrets.token_urlsafe(32))  # Use environment variable or generate a secure secret key
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
 
@@ -34,91 +36,31 @@ def validate_subscription_data(data):
 @app.route('/subscribe', methods=['POST'])
 @jwt_required()
 def subscribe():
-    current_user_id = get_jwt_identity()
-    is_valid, error_response, status_code = validate_subscription_data(request.get_json())
+    current_user = get_jwt_identity()
+    data = request.get_json()
 
+    is_valid, error_message, status_code = validate_subscription_data(data)
     if not is_valid:
-        return jsonify(error_response), status_code
+        return jsonify(error_message), status_code
 
-    subscription = UserSubscription.query.filter_by(user_id=current_user_id, event_type=request.json['event_type']).first()
-    
-    if subscription:
-        subscription.notification_method = request.json['notification_method']
-        subscription.target_recipients = request.json.get('target_recipients', None)
-    else:
-        new_subscription = UserSubscription(
-            user_id=current_user_id,
-            event_type=request.json['event_type'],
-            notification_method=request.json['notification_method'],
-            target_recipients=request.json.get('target_recipients', None)
-        )
-        db.session.add(new_subscription)
-    
-    try:
-        db.session.commit()
-        return jsonify({'message': 'Subscription updated successfully'}), 201
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({'message': 'Failed to update subscription', 'error': str(e)}), 500
+    new_subscription = UserSubscription(
+        user_id=current_user['id'],
+        event_type=data['event_type'],
+        notification_method=data['notification_method'],
+        target_recipients=data.get('target_recipients', '')
+    )
+    db.session.add(new_subscription)
+    db.session.commit()
 
-@app.route('/notifications', methods=['POST'])
+    return jsonify({'message': 'Subscription successful'}), 201
+
+@app.route('/subscriptions', methods=['GET'])
 @jwt_required()
-def create_notification():
-    current_user_id = get_jwt_identity()
-    is_valid, error_response, status_code = validate_subscription_data(request.get_json())
-
-    if not is_valid:
-        return jsonify(error_response), status_code
-
-    event_types = ['new_lead', 'transaction_status_change', 'product_catalog_update']
-
-    subscriptions = UserSubscription.query.filter_by(event_type=request.json['event_type']).all()
-
-    for subscription in subscriptions:
-        if subscription.notification_method == 'email':
-            send_email(subscription.target_recipients, request.json['message'])
-        elif subscription.notification_method == 'SMS':
-            send_sms(subscription.target_recipients, request.json['message'])
-
-    return jsonify({'message': 'Notification sent successfully'}), 201
-
-def send_email(recipients, message):
-    # Implement email sending logic here
-    pass
-
-def send_sms(recipients, message):
-    # Implement SMS sending logic here
-    pass
-
-@app.route('/automated_notifications', methods=['POST'])
-@jwt_required()
-def create_automated_notification():
-    current_user_id = get_jwt_identity()
-    is_valid, error_response, status_code = validate_subscription_data(request.get_json())
-
-    if not is_valid:
-        return jsonify(error_response), status_code
-
-    subscription = UserSubscription.query.filter_by(user_id=current_user_id, event_type=request.json['event_type']).first()
-    
-    if subscription:
-        subscription.notification_method = request.json['notification_method']
-        subscription.target_recipients = request.json.get('target_recipients', None)
-    else:
-        new_subscription = UserSubscription(
-            user_id=current_user_id,
-            event_type=request.json['event_type'],
-            notification_method=request.json['notification_method'],
-            target_recipients=request.json.get('target_recipients', None)
-        )
-        db.session.add(new_subscription)
-    
-    try:
-        db.session.commit()
-        return jsonify({'message': 'Automated notification created successfully'}), 201
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({'message': 'Failed to create automated notification', 'error': str(e)}), 500
+def get_subscriptions():
+    current_user = get_jwt_identity()
+    subscriptions = UserSubscription.query.filter_by(user_id=current_user['id']).all()
+    subscription_list = [{'event_type': sub.event_type, 'notification_method': sub.notification_method, 'target_recipients': sub.target_recipients} for sub in subscriptions]
+    return jsonify(subscription_list), 200
 
 if __name__ == '__main__':
     app.run(debug=True)

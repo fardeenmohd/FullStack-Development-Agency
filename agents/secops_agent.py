@@ -125,18 +125,31 @@ def main():
                     print(f"🚨 [SecOps] VULNERABILITY DETECTED IN {ticket.get('target_file')}!")
                     print(f"   Details: {bug_description[:100]}...")
                     
-                    # Create a High-Priority Hotfix Ticket
-                    hotfix_ticket = {
-                        "id": f"SEC-BUG-{int(time.time())}",
-                        "agent": ticket.get("agent"),
-                        "target_file": ticket.get("target_file"),
-                        "description": f"[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\n{bug_description}\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
-                        "retries": 0
-                    }
+                    # ANTI-SPAM MEASURE: Check if a fix for this file is already queued
+                    is_already_queued = False
+                    for q_col in ["todo", "in_progress", "in_review"]:
+                        for t in board.get(q_col, []):
+                            if t.get("target_file") == ticket.get("target_file"):
+                                is_already_queued = True
+                                break
+                        if is_already_queued:
+                            break
                     
-                    # Inject at index 0 so it's the very next thing the Dispatcher builds
-                    board["todo"].insert(0, hotfix_ticket)
-                    print(f"💉 [SecOps] Hotfix ticket [{hotfix_ticket['id']}] injected to the front of the Todo queue!")
+                    if not is_already_queued:
+                        # Create a High-Priority Hotfix Ticket
+                        hotfix_ticket = {
+                            "id": f"SEC-BUG-{int(time.time())}",
+                            "agent": ticket.get("agent"),
+                            "target_file": ticket.get("target_file"),
+                            "description": f"[URGENT SECURITY HOTFIX]\nThe SecOps Agent detected a critical vulnerability in this file:\n\n{bug_description}\n\nYou MUST rewrite the file completely to patch this security flaw while maintaining existing functionality.",
+                            "retries": 0
+                        }
+                        
+                        # Inject at index 0 so it's the very next thing the Dispatcher builds
+                        board["todo"].insert(0, hotfix_ticket)
+                        print(f"💉 [SecOps] Hotfix ticket [{hotfix_ticket['id']}] injected to the front of the Todo queue!")
+                    else:
+                        print(f"⚠️ [SecOps] A hotfix for {ticket.get('target_file')} is already in the pipeline. Skipping duplicate.")
                 else:
                     print(f"✅ [SecOps] {os.path.basename(ticket.get('target_file', 'unknown'))} passed security audit.")
 

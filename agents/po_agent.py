@@ -1,9 +1,20 @@
 import os
 import json
 import sys
-from local_llm import generate_local_code
 
-BOARD_FILE = "../antigravity_board.json"
+# Set up robust absolute paths
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(CURRENT_DIR, ".."))
+BOARD_FILE = os.path.join(PROJECT_ROOT, "antigravity_board.json")
+BLUEPRINT_FILE = os.path.join(PROJECT_ROOT, "system_blueprint.json")
+
+# Append current directory so we can use the local_llm adapter
+sys.path.append(CURRENT_DIR)
+try:
+    from local_llm import generate_local_code
+except ImportError:
+    print("❌ Error: Could not import local_llm. Make sure local_llm.py is in the agents directory.")
+    sys.exit(1)
 
 po_persona = """
 You are an expert Agile Product Owner and Technical Lead.
@@ -23,8 +34,8 @@ CRITICAL: Output ONLY valid JSON. Do not wrap the JSON in markdown code blocks.
 def init_board():
     """Initializes the Antigravity board if it doesn't exist."""
     if not os.path.exists(BOARD_FILE):
-        with open(BOARD_FILE, "w") as f:
-            json.dump({"todo": [], "in_progress": [], "done": []}, f, indent=4)
+        with open(BOARD_FILE, "w", encoding="utf-8") as f:
+            json.dump({"todo": [], "in_progress": [], "in_review": [], "done": [], "archived": []}, f, indent=4)
 
 def run_po_agent(user_prompt: str):
     init_board()
@@ -32,8 +43,8 @@ def run_po_agent(user_prompt: str):
     print(f"📋 Product Owner Agent is breaking down request: '{user_prompt}'")
 
     system_blueprint = "{}"
-    if os.path.exists("system_blueprint.json"):
-        with open("system_blueprint.json", "r", encoding="utf-8") as f:
+    if os.path.exists(BLUEPRINT_FILE):
+        with open(BLUEPRINT_FILE, "r", encoding="utf-8") as f:
             system_blueprint = f.read()
 
     llm_prompt = f"""
@@ -57,12 +68,17 @@ def run_po_agent(user_prompt: str):
             return
 
         # Load the current board
-        with open(BOARD_FILE, "r") as f:
+        with open(BOARD_FILE, "r", encoding="utf-8") as f:
             board = json.load(f)
             
+        # Ensure all columns exist
+        for col in ["todo", "in_progress", "in_review", "done", "archived"]:
+            if col not in board:
+                board[col] = []
+                
         # Append new tickets to the 'todo' column
         for ticket in new_tickets:
-            # SAFETY NET: If the LLM still hallucinates an empty target file, auto-generate one!
+            # SAFETY NET: If the LLM hallucinates an empty target file, auto-generate one!
             target = ticket.get("target_file", "").strip()
             if not target or target in [".", "/", "\\"]:
                 ext_map = {"frontend": "tsx", "compute": "py", "enterprise": "java", "qa": "py", "devops": "yml"}
@@ -73,7 +89,7 @@ def run_po_agent(user_prompt: str):
             print(f"  🎟️ Ticket Created: [{ticket['id']}] -> Assigned to '{ticket['agent']}' for {ticket['target_file']}")
             
         # Save the updated board
-        with open(BOARD_FILE, "w") as f:
+        with open(BOARD_FILE, "w", encoding="utf-8") as f:
             json.dump(board, f, indent=4)
             
         print("\n✅ Backlog successfully updated! The Antigravity Dispatcher can now pick up these tasks.")

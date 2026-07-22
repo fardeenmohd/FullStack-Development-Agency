@@ -35,16 +35,42 @@ def save_board(board):
         json.dump(board, f, indent=4)
 
 def fix_nextjs_code(code: str) -> str:
-    """Ensures Next.js files don't lose their 'use client' directives."""
+    """Automatically injects 'use client', fixes router imports, and ensures React hooks are imported."""
+    import re
     if not code.strip():
         return code
+        
+    code = code.replace("import { useRouter } from 'next/router';", "import { useRouter } from 'next/navigation';")
+    code = code.replace('import { useRouter } from "next/router";', 'import { useRouter } from "next/navigation";')
     
-    needs_client = any(hook in code for hook in ["useState", "useEffect", "useContext", "useRef", "useCallback"])
+    hooks = ["useState", "useEffect", "useContext", "useRef", "useCallback", "useMemo", "Suspense"]
+    needs_client = any(hook in code for hook in hooks)
     has_client_directive = '"use client";' in code or "'use client';" in code
     
     if needs_client and not has_client_directive:
         code = '"use client";\n' + code
         
+    # Aggressively auto-inject missing React hook imports
+    for hook in hooks:
+        if re.search(rf'\b{hook}\b', code):
+            if not re.search(rf'import\s+.*?\b{hook}\b.*?from\s+[\'"]react[\'"]', code, re.DOTALL):
+                react_import_match = re.search(r'import\s+(.*?)\s+from\s+[\'"]react[\'"]', code, re.DOTALL)
+                if react_import_match:
+                    existing_imports = react_import_match.group(1)
+                    if '{' in existing_imports:
+                        new_imports = existing_imports.replace('{', f'{{ {hook}, ', 1)
+                    else:
+                        new_imports = f"{existing_imports}, {{ {hook} }}"
+                    code = code.replace(react_import_match.group(0), f"import {new_imports} from 'react'")
+                else:
+                    import_stmt = f"import {{ {hook} }} from 'react';\n"
+                    if '"use client";' in code:
+                        code = code.replace('"use client";', f'"use client";\n{import_stmt}', 1)
+                    elif "'use client';" in code:
+                        code = code.replace("'use client';", f"'use client';\n{import_stmt}", 1)
+                    else:
+                        code = import_stmt + code
+                        
     return code
 
 def process_ui_review(ticket):

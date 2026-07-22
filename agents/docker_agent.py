@@ -54,7 +54,7 @@ def ask_llm_for_fix(system_prompt, error_logs):
     ERROR LOGS:
     {tail_logs}
     
-    You MUST respond using EXACTLY this format:
+    You MUST respond using EXACTLY this format and NOTHING else. Do NOT use markdown backticks.
     
     FILE: <relative path to the file to fix, e.g., backend-java/pom.xml or compute-python/main.py>
     CONTENT:
@@ -65,7 +65,12 @@ def ask_llm_for_fix(system_prompt, error_logs):
     payload = {
         "model": MODEL_NAME,
         "prompt": prompt,
-        "stream": False
+        "system": "You are an expert DevOps AI. You must follow the exact formatting rules.",
+        "stream": False,
+        "options": {
+            "temperature": 0.1,
+            "num_predict": 8000
+        }
     }
 
     try:
@@ -78,22 +83,37 @@ def ask_llm_for_fix(system_prompt, error_logs):
 
 def apply_fix(llm_response):
     """Parses the LLM response and overwrites the broken file."""
-    file_match = re.search(r"FILE:\s*(.+)", llm_response)
-    content_match = re.search(r"CONTENT:\n(.*?)\nEND_CONTENT", llm_response, re.DOTALL)
+    # Strip markdown if the AI hallucinated it around the entire response
+    llm_response = llm_response.strip()
+    if llm_response.startswith("```"):
+        llm_response = re.sub(r"^```[a-zA-Z]*\n", "", llm_response)
+        if llm_response.endswith("```"):
+            llm_response = llm_response[:-3].strip()
+
+    file_match = re.search(r"FILE:\s*([^\n]+)", llm_response)
+    # Handle missing END_CONTENT due to LLM cutting off gracefully
+    content_match = re.search(r"CONTENT:\n(.*?)(?:\nEND_CONTENT|$)", llm_response, re.DOTALL)
 
     if not file_match or not content_match:
         print("⚠️ [Docker Agent] LLM didn't return a properly formatted fix. Manual intervention required.")
+        print(f"RAW LLM OUTPUT:\n{llm_response[:500]}...") # Print snippet for debugging
         return False
 
     filepath = file_match.group(1).strip()
-    new_content = content_match.group(1)
+    new_content = content_match.group(1).strip()
+
+    # If the LLM still put markdown backticks inside the CONTENT block
+    if new_content.startswith("```"):
+        new_content = re.sub(r"^```[a-zA-Z]*\n", "", new_content)
+        if new_content.endswith("```"):
+            new_content = new_content[:-3].strip()
 
     full_path = os.path.join(PROJECT_ROOT, filepath)
     
     try:
         os.makedirs(os.path.dirname(full_path), exist_ok=True)
         with open(full_path, "w", encoding="utf-8") as f:
-            f.write(new_content)
+            f.write(new_content + "\n")
         print(f"✅ [Docker Agent] Successfully applied AI fix to: {filepath}")
         return True
     except Exception as e:
@@ -187,6 +207,7 @@ def main():
             break
         else:
             print(f"❌ [Docker Agent] Build failed with errors.")
+            print(f"\n--- 🛑 DOCKER BUILD ERROR LOGS 🛑 ---\n{logs[-1500:]}\n--------------------------------------\n")
             
             prompt = "You are an expert DevOps and Software Engineer. The following Docker build just failed. Analyze the logs, identify the broken file, and provide the complete fixed code."
             llm_response = ask_llm_for_fix(prompt, logs)
