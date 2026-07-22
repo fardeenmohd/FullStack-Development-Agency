@@ -25,6 +25,54 @@
             "agent": "compute",
             "target_file": "main.py",
             "description": "Add the following line of code as a fun easter egg in your Python script: 'import antigravity'. This should be added to the main.py file."
+        },
+        {
+            "id": "UI-1",
+            "agent": "frontend",
+            "target_file": "app/page.tsx",
+            "description": "Create a new React component for the automated notifications dashboard using Tailwind CSS. The dashboard should include sections for setting up notifications, viewing active notifications, and managing notification preferences. Ensure that the UI is responsive and follows modern design principles."
+        },
+        {
+            "id": "API-1",
+            "agent": "compute",
+            "target_file": "api/notifications.py",
+            "description": "Develop an API endpoint to handle the creation and management of automated notifications. The endpoint should allow users to specify event types, notification preferences (e.g., email, SMS), and target recipients. Implement validation for input data and ensure that the API is secure and scalable."
+        },
+        {
+            "id": "DB-1",
+            "agent": "enterprise",
+            "target_file": "models/notifications.py",
+            "description": "Create a database model to store notification preferences, event logs, and delivery statuses. Ensure that the model is normalized and optimized for read and write operations. Implement data migration scripts if necessary."
+        },
+        {
+            "id": "DEVOPS-1",
+            "agent": "devops",
+            "target_file": ".env.example",
+            "description": "Add environment variables to the .env.example file for configuring notification settings, such as API keys and SMTP credentials. Ensure that these variables are securely managed and not exposed in production environments."
+        },
+        {
+            "id": "QA-1",
+            "agent": "qa",
+            "target_file": "tests/notifications.py",
+            "description": "Write unit tests for the notification API endpoints to ensure they handle various scenarios correctly. Include tests for creating, updating, and deleting notifications, as well as testing notification delivery mechanisms. Ensure that all tests are automated and can be run locally."
+        },
+        {
+            "id": "UI-1",
+            "agent": "frontend",
+            "target_file": "app/page.tsx",
+            "description": "Add a 'Quick Export' button to the product catalog page. The button should be located in the top right corner of the page, next to the search bar. When clicked, it should open a modal dialog with a list of top-scoring leads for the selected product. Each lead should have an option to initiate a new transaction."
+        },
+        {
+            "id": "API-1",
+            "agent": "compute",
+            "target_file": "api/transactions.py",
+            "description": "Create an API endpoint that handles the creation of new transactions based on user selections from the 'Quick Export' modal. The endpoint should accept a list of lead IDs and return a confirmation message."
+        },
+        {
+            "id": "QA-1",
+            "agent": "qa",
+            "target_file": "tests/quick_export_test.py",
+            "description": "Write unit tests for the new 'Quick Export' functionality. Ensure that clicking the button opens the modal, selecting leads works correctly, and initiating a transaction is handled properly."
         }
     ]
 }
