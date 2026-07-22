@@ -5,27 +5,28 @@ import time
 import subprocess
 import requests
 
-# Ensure we can import local_llm if run_all.py is inside the agents folder
-sys.path.append(os.path.dirname(__file__))
-try:
-    from local_llm import generate_local_code
-except ImportError:
-    pass # We will use direct requests for raw file output below
-
-# Set PROJECT_ROOT to the parent directory since this script is in 'agents/'
-PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(CURRENT_DIR, ".."))
 BOARD_FILE = os.path.join(PROJECT_ROOT, "antigravity_board.json")
 
 def load_board():
     """Loads the Kanban board state."""
     if not os.path.exists(BOARD_FILE):
-        return {"todo": [], "in_progress": [], "done": []}
-    with open(BOARD_FILE, "r") as f:
-        return json.load(f)
+        return {"todo": [], "in_progress": [], "in_review": [], "done": []}
+    
+    try:
+        with open(BOARD_FILE, "r", encoding="utf-8") as f:
+            board = json.load(f)
+            for col in ["todo", "in_progress", "in_review", "done"]:
+                if col not in board:
+                    board[col] = []
+            return board
+    except Exception:
+        return {"todo": [], "in_progress": [], "in_review": [], "done": []}
 
 def save_board(board):
     """Saves the Kanban board state."""
-    with open(BOARD_FILE, "w") as f:
+    with open(BOARD_FILE, "w", encoding="utf-8") as f:
         json.dump(board, f, indent=4)
 
 def fix_nextjs_code(code: str) -> str:
@@ -50,7 +51,6 @@ def process_ticket(ticket):
     
     target_file = ticket.get('target_file', '').strip()
     
-    # Strip illegal/problematic characters from the end
     while target_file and target_file[-1] in ['/', '\\', '.']:
         target_file = target_file[:-1]
         
@@ -58,7 +58,6 @@ def process_ticket(ticket):
         print(f"⚠️ [Dispatcher] Ticket [{ticket['id']}] has an empty or invalid target_file! Skipping.")
         return False
         
-    # Resolve actual path based on agent
     base_dirs = {
         "frontend": os.path.join(PROJECT_ROOT, "frontend-nextjs"),
         "compute": os.path.join(PROJECT_ROOT, "compute-python"),
@@ -70,12 +69,10 @@ def process_ticket(ticket):
     base_dir = base_dirs.get(ticket['agent'], PROJECT_ROOT)
     full_path = os.path.abspath(os.path.join(base_dir, target_file))
     
-    # Safety check: Ensure we aren't trying to read/write a directory
     if os.path.isdir(full_path):
         print(f"⚠️ [Dispatcher] Target '{full_path}' evaluates to a directory, not a file! Skipping.")
         return False
     
-    # Safely read existing content if the file already exists
     existing_content = ""
     try:
         if os.path.exists(full_path) and os.path.isfile(full_path):
@@ -100,7 +97,6 @@ def process_ticket(ticket):
     print(f"⚙️  Spinning up 3070 Ti to generate code for {target_file}...")
     
     try:
-        # We bypass local_llm.py here because we want raw text output, not strict JSON
         OLLAMA_URL = "http://localhost:11434/api/generate"
         LOCAL_MODEL = "qwen2.5-coder:7b"
         
@@ -119,7 +115,6 @@ def process_ticket(ticket):
         response.raise_for_status()
         generated_code = response.json().get("response", "").strip()
         
-        # Strip markdown if the AI hallucinates it
         if generated_code.startswith("```"):
             lines = generated_code.split("\n")
             if len(lines) > 1:
@@ -127,11 +122,9 @@ def process_ticket(ticket):
         if generated_code.endswith("```"):
             generated_code = generated_code[:-3]
             
-        # Apply Next.js auto-fixes if it's a frontend file
         if ticket['agent'] == "frontend" and (target_file.endswith(".tsx") or target_file.endswith(".ts")):
             generated_code = fix_nextjs_code(generated_code)
             
-        # Safely write the generated code
         os.makedirs(os.path.dirname(full_path), exist_ok=True)
         with open(full_path, "w", encoding="utf-8") as f:
             f.write(generated_code.strip() + "\n")
@@ -143,23 +136,18 @@ def process_ticket(ticket):
         return False
 
 def trigger_deployment(agent_tag):
-    """Triggers docker rebuild for the specific container modified by the ticket."""
     service_map = {
-        "frontend": "frontend-nextjs",
         "compute": "compute-python",
         "enterprise": "backend-java"
     }
+    
     service = service_map.get(agent_tag)
     
     if service:
         print(f"🐳 [Dispatcher] Hot-reloading Docker service: {service}...")
         subprocess.run(["docker", "compose", "build", service], cwd=PROJECT_ROOT)
         subprocess.run(["docker", "compose", "up", "-d", service], cwd=PROJECT_ROOT)
-    else:
-        print("🐳 [Dispatcher] Rebuilding entire Docker stack...")
-        subprocess.run(["docker", "compose", "up", "--build", "-d"], cwd=PROJECT_ROOT)
-        
-    print("✅ [Dispatcher] Deployment triggered. SRE Agent will catch any runtime errors.")
+        print("✅ [Dispatcher] Deployment triggered.")
 
 def main():
     print("===================================================")
@@ -168,11 +156,6 @@ def main():
     print("Watching antigravity_board.json for new tickets...")
     print("===================================================")
     
-    # Ensure board exists
-    if not os.path.exists(BOARD_FILE):
-        save_board({"todo": [], "in_progress": [], "done": []})
-        
-    # Reclaim any stuck tickets from previous runs
     board = load_board()
     if board.get("in_progress") and len(board["in_progress"]) > 0:
         print(f"🔄 [Dispatcher] Reclaiming {len(board['in_progress'])} stuck tickets from 'in_progress' back to 'todo'...")
@@ -184,39 +167,39 @@ def main():
         board = load_board()
         
         if board.get("todo") and len(board["todo"]) > 0:
-            # Pop the first ticket
             ticket = board["todo"].pop(0)
             board["in_progress"].append(ticket)
             save_board(board)
             
             success = process_ticket(ticket)
             
-            # Reload in case PO agent added more tickets while we were generating
             board = load_board() 
-            
-            # Remove from in_progress
             board["in_progress"] = [t for t in board["in_progress"] if t["id"] != ticket["id"]]
             
             if success:
-                board["done"].append(ticket)
+                if ticket["agent"] == "frontend":
+                    print(f"📫 [Dispatcher] Routing frontend ticket [{ticket['id']}] to UX/UI Designer...")
+                    board["in_review"].append(ticket)
+                elif ticket["agent"] in ["compute", "enterprise"]:
+                    print(f"📫 [Dispatcher] Routing backend ticket [{ticket['id']}] to QA Gatekeeper...")
+                    board["in_review"].append(ticket)
+                    # Deploy the new backend code so QA can execute tests against the live container!
+                    trigger_deployment(ticket["agent"])
+                else:
+                    board["done"].append(ticket)
             else:
-                # 3-Strike System: Don't let bad tickets block the queue forever
                 retries = ticket.get("retries", 0)
                 if retries < 2:
                     print(f"⚠️ Ticket failed. Putting it at the back of the queue (Retry {retries + 1}/3).")
                     ticket["retries"] = retries + 1
-                    board["todo"].append(ticket) # Append to the end of the line
+                    board["todo"].append(ticket)
                 else:
-                    print(f"🛑 Ticket [{ticket['id']}] failed 3 times! Moving to 'done' (as failed) to clear the queue.")
+                    print(f"🛑 Ticket [{ticket['id']}] failed 3 times! Moving to 'done' (as failed).")
                     ticket["status"] = "failed"
                     board["done"].append(ticket)
                 
             save_board(board)
-            
-            if success:
-                trigger_deployment(ticket["agent"])
                 
-        # Poll every 3 seconds
         time.sleep(3)
 
 if __name__ == "__main__":
