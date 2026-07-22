@@ -1,7 +1,5 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import uvicorn
-import antigravity
 
 app = FastAPI(
     title="Lead Hunter Compute Engine",

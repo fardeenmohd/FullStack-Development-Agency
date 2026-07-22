@@ -3,7 +3,7 @@ import json
 import sys
 from local_llm import generate_local_code
 
-BOARD_FILE = "./antigravity_board.json"
+BOARD_FILE = "../antigravity_board.json"
 
 po_persona = """
 You are an expert Agile Product Owner and Technical Lead.
@@ -14,7 +14,7 @@ You must output a strictly formatted JSON object containing:
    Each ticket object MUST have:
    - "id": A unique string ID (e.g., "UI-1", "API-1").
    - "agent": The specific agent to handle the task. Must be exactly one of: ["frontend", "compute", "enterprise", "devops", "qa"].
-   - "target_file": The primary file this task will create or modify (e.g., "app/page.tsx" or "main.py").
+   - "target_file": The primary file this task will create or modify. CRITICAL: THIS MUST NEVER BE EMPTY. Invent a logical file path if needed (e.g., "tests/test_api.py", "components/Button.tsx").
    - "description": A highly detailed, technical prompt that will be sent to the developer agent instructing them exactly what code to write.
 
 CRITICAL: Output ONLY valid JSON. Do not wrap the JSON in markdown code blocks.
@@ -62,6 +62,13 @@ def run_po_agent(user_prompt: str):
             
         # Append new tickets to the 'todo' column
         for ticket in new_tickets:
+            # SAFETY NET: If the LLM still hallucinates an empty target file, auto-generate one!
+            target = ticket.get("target_file", "").strip()
+            if not target or target in [".", "/", "\\"]:
+                ext_map = {"frontend": "tsx", "compute": "py", "enterprise": "java", "qa": "py", "devops": "yml"}
+                ext = ext_map.get(ticket.get("agent", "compute"), "txt")
+                ticket["target_file"] = f"auto_generated_{ticket.get('id', 'task').lower()}.{ext}"
+                
             board["todo"].append(ticket)
             print(f"  🎟️ Ticket Created: [{ticket['id']}] -> Assigned to '{ticket['agent']}' for {ticket['target_file']}")
             

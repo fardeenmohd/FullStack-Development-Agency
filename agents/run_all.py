@@ -47,8 +47,17 @@ def fix_nextjs_code(code: str) -> str:
 def process_ticket(ticket):
     """Passes the ticket to the 3070 Ti and overwrites the target file."""
     print(f"\n🚀 [Dispatcher] Picking up Ticket: [{ticket['id']}] for '{ticket['agent']}'")
-    target_file = ticket['target_file']
     
+    target_file = ticket.get('target_file', '').strip()
+    
+    # Strip illegal/problematic characters from the end
+    while target_file and target_file[-1] in ['/', '\\', '.']:
+        target_file = target_file[:-1]
+        
+    if not target_file:
+        print(f"⚠️ [Dispatcher] Ticket [{ticket['id']}] has an empty or invalid target_file! Skipping.")
+        return False
+        
     # Resolve actual path based on agent
     base_dirs = {
         "frontend": os.path.join(PROJECT_ROOT, "frontend-nextjs"),
@@ -59,13 +68,21 @@ def process_ticket(ticket):
     }
     
     base_dir = base_dirs.get(ticket['agent'], PROJECT_ROOT)
-    full_path = os.path.join(base_dir, target_file)
+    full_path = os.path.abspath(os.path.join(base_dir, target_file))
     
-    # Read existing content if the file already exists
+    # Safety check: Ensure we aren't trying to read/write a directory
+    if os.path.isdir(full_path):
+        print(f"⚠️ [Dispatcher] Target '{full_path}' evaluates to a directory, not a file! Skipping.")
+        return False
+    
+    # Safely read existing content if the file already exists
     existing_content = ""
-    if os.path.exists(full_path):
-        with open(full_path, "r", encoding="utf-8") as f:
-            existing_content = f.read()
+    try:
+        if os.path.exists(full_path) and os.path.isfile(full_path):
+            with open(full_path, "r", encoding="utf-8") as f:
+                existing_content = f.read()
+    except Exception as e:
+        print(f"⚠️ [Dispatcher] Could not read existing file {full_path}: {e}. Treating as empty.")
 
     system_prompt = f"""
     You are an expert {ticket['agent']} developer.
@@ -114,6 +131,7 @@ def process_ticket(ticket):
         if ticket['agent'] == "frontend" and (target_file.endswith(".tsx") or target_file.endswith(".ts")):
             generated_code = fix_nextjs_code(generated_code)
             
+        # Safely write the generated code
         os.makedirs(os.path.dirname(full_path), exist_ok=True)
         with open(full_path, "w", encoding="utf-8") as f:
             f.write(generated_code.strip() + "\n")
@@ -153,6 +171,14 @@ def main():
     # Ensure board exists
     if not os.path.exists(BOARD_FILE):
         save_board({"todo": [], "in_progress": [], "done": []})
+        
+    # Reclaim any stuck tickets from previous runs
+    board = load_board()
+    if board.get("in_progress") and len(board["in_progress"]) > 0:
+        print(f"🔄 [Dispatcher] Reclaiming {len(board['in_progress'])} stuck tickets from 'in_progress' back to 'todo'...")
+        board["todo"] = board["in_progress"] + board.get("todo", [])
+        board["in_progress"] = []
+        save_board(board)
     
     while True:
         board = load_board()
@@ -174,9 +200,16 @@ def main():
             if success:
                 board["done"].append(ticket)
             else:
-                # Put back in todo if failed 
-                print("⚠️ Putting ticket back in TODO due to failure.")
-                board["todo"].insert(0, ticket)
+                # 3-Strike System: Don't let bad tickets block the queue forever
+                retries = ticket.get("retries", 0)
+                if retries < 2:
+                    print(f"⚠️ Ticket failed. Putting it at the back of the queue (Retry {retries + 1}/3).")
+                    ticket["retries"] = retries + 1
+                    board["todo"].append(ticket) # Append to the end of the line
+                else:
+                    print(f"🛑 Ticket [{ticket['id']}] failed 3 times! Moving to 'done' (as failed) to clear the queue.")
+                    ticket["status"] = "failed"
+                    board["done"].append(ticket)
                 
             save_board(board)
             

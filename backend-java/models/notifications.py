@@ -1,17 +1,34 @@
 from django.db import models
 
 class NotificationPreference(models.Model):
-    user = models.OneToOneField('auth.User', on_delete=models.CASCADE)
-    email_enabled = models.BooleanField(default=True)
-    sms_enabled = models.BooleanField(default=False)
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    preference_key = models.CharField(max_length=100, db_index=True)
+    enabled = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = ('user', 'preference_key')
 
 class EventLog(models.Model):
-    event_type = models.CharField(max_length=100)
-    description = models.TextField()
+    event_type = models.CharField(max_length=100, db_index=True)
+    details = models.JSONField(null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['event_type']),
+            models.Index(fields=['timestamp']),
+        ]
+
 class DeliveryStatus(models.Model):
-    notification_preference = models.ForeignKey(NotificationPreference, on_delete=models.CASCADE)
-    event_log = models.ForeignKey(EventLog, on_delete=models.CASCADE)
-    status = models.CharField(max_length=50)
-    delivery_time = models.DateTimeField(null=True, blank=True)
+    notification_id = models.IntegerField(db_index=True)
+    delivery_method = models.CharField(max_length=50, db_index=True)
+    status = models.CharField(max_length=50, choices=[('delivered', 'Delivered'), ('failed', 'Failed')], default='delivered')
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['notification_id']),
+            models.Index(fields=['delivery_method']),
+            models.Index(fields=['status']),
+            models.Index(fields=['timestamp']),
+        ]

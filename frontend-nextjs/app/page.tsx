@@ -2,82 +2,84 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const NotificationsDashboard = () => {
-  const [notifications, setNotifications] = useState([]);
-  const [preferences, setPreferences] = useState({});
-  const [newNotification, setNewNotification] = useState({ title: '', message: '' });
-  const [showModal, setShowModal] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+const AutomatedAlertsDashboard = () => {
+  const [alerts, setAlerts] = useState([]);
+  const [targetRegion, setTargetRegion] = useState('');
+  const [productCategory, setProductCategory] = useState('');
+  const [confidenceScoreThreshold, setConfidenceScoreThreshold] = useState(0);
+  const [formError, setFormError] = useState('');
 
   useEffect(() => {
-    const fetchNotifications = async () => {
+    const fetchAlerts = async () => {
       try {
-        const response = await axios.get('/api/v1/notifications');
-        setNotifications(response.data);
+        const response = await axios.get('/api/v1/alerts');
+        setAlerts(response.data);
       } catch (error) {
-        console.error('Failed to fetch notifications:', error);
+        console.error('Failed to fetch alerts:', error);
       }
     };
 
-    const fetchPreferences = async () => {
-      try {
-        const response = await axios.get('/api/v1/preferences');
-        setPreferences(response.data);
-      } catch (error) {
-        console.error('Failed to fetch preferences:', error);
-      }
-    };
-
-    fetchNotifications();
-    fetchPreferences();
+    fetchAlerts();
   }, []);
 
-  const handleAddNotification = async () => {
-    try {
-      await axios.post('/api/v1/notifications', newNotification);
-      setNewNotification({ title: '', message: '' });
-      fetchNotifications();
-    } catch (error) {
-      console.error('Failed to add notification:', error);
+  const handleFormChange = (e) => {
+    const { name, value, type } = e.target;
+    if (type === 'number') {
+      setConfidenceScoreThreshold(Number(value));
+    } else {
+      switch (name) {
+        case 'targetRegion':
+          setTargetRegion(value);
+          break;
+        case 'productCategory':
+          setProductCategory(value);
+          break;
+        default:
+          break;
+      }
     }
   };
 
-  const handleUpdatePreference = async (key, value) => {
+  const handleAlertChange = async () => {
+    if (!targetRegion || !productCategory || confidenceScoreThreshold <= 0) {
+      setFormError('Please fill in all fields.');
+      return;
+    }
+
     try {
-      await axios.put('/api/v1/preferences', { [key]: value });
-      setPreferences(prevPreferences => ({ ...prevPreferences, [key]: value }));
+      await axios.post('/api/v1/alerts', { targetRegion, productCategory, confidenceScoreThreshold });
+      setAlerts([...alerts, { targetRegion, productCategory, confidenceScoreThreshold }]);
+      resetForm();
+      setFormError('');
     } catch (error) {
-      console.error('Failed to update preference:', error);
+      console.error('Failed to update alert:', error);
+      setFormError('Failed to add alert. Please try again.');
     }
   };
 
-  const handleQuickExport = async () => {
+  const handleDeleteAlert = async (id) => {
     try {
-      const response = await axios.get(`/api/v1/products/${selectedProduct}/leads`);
-      setShowModal(true);
+      await axios.delete(`/api/v1/alerts/${id}`);
+      setAlerts(alerts.filter(alert => alert.id !== id));
     } catch (error) {
-      console.error('Failed to fetch leads:', error);
+      console.error('Failed to delete alert:', error);
+      setFormError('Failed to delete alert. Please try again.');
     }
   };
 
-  const handleInitiateTransaction = async (leadId) => {
-    try {
-      await axios.post(`/api/v1/transactions`, { leadId });
-      alert('Transaction initiated successfully!');
-    } catch (error) {
-      console.error('Failed to initiate transaction:', error);
-    }
+  const resetForm = () => {
+    setTargetRegion('');
+    setProductCategory('');
+    setConfidenceScoreThreshold(0);
   };
 
   return (
     <div className="flex h-screen bg-gray-900 text-white">
       <aside className="w-64 bg-gray-800 p-4">
-        <h2 className="text-lg font-bold">Notifications Dashboard</h2>
+        <h2 className="text-lg font-bold">Automated Alerts Dashboard</h2>
         <nav className="mt-4">
           <ul>
-            <li className="mb-2"><a href="#" className="block px-3 py-2 rounded hover:bg-gray-700">Setup Notifications</a></li>
-            <li className="mb-2"><a href="#" className="block px-3 py-2 rounded hover:bg-gray-700">View Active Notifications</a></li>
-            <li><a href="#" className="block px-3 py-2 rounded hover:bg-gray-700">Manage Preferences</a></li>
+            {/* Add navigation items if needed */}
           </ul>
         </nav>
       </aside>
@@ -85,59 +87,72 @@ const NotificationsDashboard = () => {
         <header className="bg-gray-800 p-4 border-b border-gray-700">
           <div className="flex justify-between items-center">
             <img src="/logo.png" alt="Brand Logo" className="h-10" />
-            <p>Welcome, Notifications Admin</p>
+            <p>Welcome, Alerts Admin</p>
           </div>
         </header>
         <main className="flex flex-col p-4">
           <section className="bg-gray-700 p-4 rounded shadow mb-4">
-            <h3>Setup Notifications</h3>
-            <input
-              type="text"
-              value={newNotification.title}
-              onChange={(e) => setNewNotification({ ...newNotification, title: e.target.value })}
-              placeholder="Title"
-              className="w-full p-2 mt-2 border rounded"
-            />
-            <textarea
-              value={newNotification.message}
-              onChange={(e) => setNewNotification({ ...newNotification, message: e.target.value })}
-              placeholder="Message"
-              className="w-full p-2 mt-2 border rounded"
-            />
-            <button onClick={handleAddNotification} className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Add Notification</button>
-          </section>
-          <section className="bg-gray-700 p-4 rounded shadow mb-4">
-            <h3>View Active Notifications</h3>
-            <ul>
-              {notifications.map(notification => (
-                <li key={notification.id} className="mb-2">{notification.title}: {notification.message}</li>
+            <h3>Timeline View</h3>
+            <ul className="space-y-2">
+              {alerts.map(alert => (
+                <li key={alert.id} className="bg-gray-800 p-4 rounded shadow">
+                  <div className="flex justify-between items-center">
+                    <strong>{alert.targetRegion}</strong>: {alert.productCategory}, Confidence: {alert.confidenceScoreThreshold}
+                  </div>
+                  <button
+                    onClick={() => handleDeleteAlert(alert.id)}
+                    className="mt-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none"
+                  >
+                    Delete
+                  </button>
+                </li>
               ))}
             </ul>
           </section>
-          <section className="bg-gray-700 p-4 rounded shadow">
-            <h3>Manage Preferences</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="emailNotifications">Email Notifications:</label>
-                <input
-                  type="checkbox"
-                  id="emailNotifications"
-                  checked={preferences.emailNotifications}
-                  onChange={(e) => handleUpdatePreference('emailNotifications', e.target.checked)}
-                  className="ml-2"
-                />
-              </div>
-              <div>
-                <label htmlFor="smsNotifications">SMS Notifications:</label>
-                <input
-                  type="checkbox"
-                  id="smsNotifications"
-                  checked={preferences.smsNotifications}
-                  onChange={(e) => handleUpdatePreference('smsNotifications', e.target.checked)}
-                  className="ml-2"
-                />
-              </div>
+          <section className="bg-gray-700 p-4 rounded shadow mb-4">
+            <h3>Configure Alert</h3>
+            <div className="mb-2">
+              <label htmlFor="targetRegion" className="block text-sm font-medium">Target Region:</label>
+              <input
+                id="targetRegion"
+                type="text"
+                value={targetRegion}
+                onChange={(e) => handleFormChange(e)}
+                name="targetRegion"
+                className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
             </div>
+            <div className="mb-2">
+              <label htmlFor="productCategory" className="block text-sm font-medium">Product Category:</label>
+              <input
+                id="productCategory"
+                type="text"
+                value={productCategory}
+                onChange={(e) => handleFormChange(e)}
+                name="productCategory"
+                className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div className="mb-2">
+              <label htmlFor="confidenceScoreThreshold" className="block text-sm font-medium">Confidence Score Threshold:</label>
+              <input
+                id="confidenceScoreThreshold"
+                type="number"
+                value={confidenceScoreThreshold}
+                onChange={(e) => handleFormChange(e)}
+                name="confidenceScoreThreshold"
+                className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            {formError && (
+              <p className="text-red-500 mt-2">{formError}</p>
+            )}
+            <button
+              onClick={handleAlertChange}
+              className="mt-2 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 focus:outline-none"
+            >
+              Add Alert
+            </button>
           </section>
         </main>
       </div>
@@ -145,4 +160,4 @@ const NotificationsDashboard = () => {
   );
 };
 
-export default NotificationsDashboard;
+export default AutomatedAlertsDashboard;
