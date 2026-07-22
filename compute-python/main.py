@@ -1,14 +1,44 @@
-from fastapi import FastAPI, Depends, HTTPException
-from pydantic import BaseModel
-from sqlalchemy.orm import Session
-from .database import get_db, Base, engine
-from .routers import auth, dashboard, products, compute, transactions
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
 
-app = FastAPI()
+app = FastAPI(
+    title="Lead Hunter Compute Engine",
+    description="Python FastAPI backend for data processing, Pandas/NumPy operations, and AI compute tasks.",
+    version="1.0.0"
+)
 
-# Include routers
-app.include_router(auth.router)
-app.include_router(dashboard.router)
-app.include_router(products.router)
-app.include_router(compute.router)
-app.include_router(transactions.router)
+# Configure CORS to allow seamless communication from the Next.js frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins for local Docker development
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods (GET, POST, PUT, DELETE, etc.)
+    allow_headers=["*"],  # Allow all headers
+)
+
+@app.get("/")
+def read_root():
+    """Root endpoint to verify the service is running."""
+    return {"message": "Compute Engine API is online and listening!"}
+
+@app.get("/health")
+def health_check():
+    """Health check endpoint for Docker container status."""
+    return {"status": "healthy", "service": "compute-engine"}
+
+@app.post("/api/v1/analyze")
+def analyze_data(payload: dict):
+    """
+    Placeholder endpoint for future data processing.
+    This is where Pandas and NumPy logic will live.
+    """
+    return {
+        "status": "success",
+        "message": "Data analyzed successfully",
+        "processed_keys": list(payload.keys())
+    }
+
+if __name__ == "__main__":
+    # Binding to 0.0.0.0 is CRITICAL for Docker so the port is exposed outside the container
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=False)

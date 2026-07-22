@@ -9,13 +9,15 @@ Your job is to read a system architecture blueprint and generate the frontend co
 
 You must output a strictly formatted JSON object containing:
 1. "files": An array of objects, where each object has:
-   - "path": The target filename (e.g., "app/page.tsx", "components/Dashboard.tsx", "package.json")
+   - "path": The target filename (e.g., "app/page.tsx")
    - "code": The full string content of the file.
 
 CRITICAL NEXT.JS APP ROUTER RULES:
-1. Every component or page that uses React hooks (`useState`, `useEffect`, `useContext`, `useRef`) MUST start with the exact line: `"use client";` at the very top.
-2. Use `import { useRouter } from 'next/navigation';` instead of 'next/router' (Next.js 13+ App Router standard).
-3. Output ONLY valid JSON. Do not wrap the JSON in markdown code blocks.
+1. CONSOLIDATION: You MUST put all React components, hooks, and UI logic into a single `app/page.tsx` file. Do NOT generate separate `hooks/`, `components/`, or `app/login/page.tsx` files. Use inline conditional rendering.
+2. DO NOT generate `app/layout.tsx` or `app/globals.css`. The system will auto-generate them.
+3. Every component or page that uses React hooks (`useState`, `useEffect`) MUST start with `"use client";` at the very top.
+4. Use `import { useRouter } from 'next/navigation';` instead of 'next/router'.
+5. Output ONLY valid JSON. Do not wrap the JSON in markdown code blocks.
 """
 
 def fix_nextjs_code(code: str) -> str:
@@ -67,10 +69,22 @@ def run_frontend_agent(blueprint_path: str):
             import shutil
             shutil.rmtree(os.path.join(base_frontend_dir, "components"))
             
+        # Clean up any hallucinated directories from previous runs
+        for bad_dir in ["hooks", "context", "pages", "lib", "app/login", "app/register", "app/dashboard"]:
+            bad_path = os.path.join(base_frontend_dir, bad_dir)
+            if os.path.exists(bad_path):
+                import shutil
+                shutil.rmtree(bad_path)
+            
         print(f"\n🚀 Writing generated frontend code to '{base_frontend_dir}':")
         
         for file_info in files:
             target_path = os.path.join(base_frontend_dir, file_info["path"])
+            
+            # Skip model-generated layouts or styles; we auto-inject perfect ones
+            if "layout.tsx" in target_path or "globals.css" in target_path:
+                continue
+
             os.makedirs(os.path.dirname(target_path), exist_ok=True)
             
             file_code = file_info["code"]
@@ -81,6 +95,25 @@ def run_frontend_agent(blueprint_path: str):
                 code_file.write(file_code)
             print(f"  ✅ Created: {file_info['path']}")
             
+        # AUTO-INJECT LAYOUT AND GLOBALS
+        print("  ✅ Auto-injecting bulletproof app/layout.tsx and app/globals.css...")
+        app_dir = os.path.join(base_frontend_dir, "app")
+        os.makedirs(app_dir, exist_ok=True)
+        
+        with open(os.path.join(app_dir, "globals.css"), "w", encoding="utf-8") as f:
+            f.write("@tailwind base;\n@tailwind components;\n@tailwind utilities;\n")
+            
+        with open(os.path.join(app_dir, "layout.tsx"), "w", encoding="utf-8") as f:
+            f.write("import \"./globals.css\";\n")
+            f.write("export const metadata = { title: \"Lead Hunter\", description: \"B2B Platform\" };\n")
+            f.write("export default function RootLayout({ children }: { children: React.ReactNode }) {\n")
+            f.write("  return (\n")
+            f.write("    <html lang=\"en\">\n")
+            f.write("      <body>{children}</body>\n")
+            f.write("    </html>\n")
+            f.write("  );\n")
+            f.write("}\n")
+
         print("\n🎉 Frontend codebase successfully scaffolded via Local GPU!")
 
     except Exception as e:
