@@ -1,5 +1,14 @@
 {
-    "todo": [],
+    "todo": [
+        {
+            "id": "API-4",
+            "agent": "compute",
+            "target_file": "endpoints/ProductAnalyticsEndpoint.py",
+            "description": "Create a new Python endpoint class named 'ProductAnalyticsEndpoint' in the 'endpoints' directory. This class should include an API route to retrieve product analytics data, using FastAPI for routing and handling HTTP requests.\n\n[QA FAILED]: The code failed unit testing. Please fix the logic. Error logs:\nHTTPConnectionPool(host='localhost', port=11434): Max retries exceeded with url: /api/generate (Caused by NewConnectionError(\"HTTPConnection(host='localhost', port=11434): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it\"))",
+            "qa_rejections": 1,
+            "retries": 15
+        }
+    ],
     "in_progress": [],
     "done": [],
     "archived": [
@@ -2149,12 +2158,5 @@
             "documented": true
         }
     ],
-    "in_review": [
-        {
-            "id": "API-4",
-            "agent": "compute",
-            "target_file": "endpoints/ProductAnalyticsEndpoint.py",
-            "description": "Create a new Python endpoint class named 'ProductAnalyticsEndpoint' in the 'endpoints' directory. This class should include an API route to retrieve product analytics data, using FastAPI for routing and handling HTTP requests."
-        }
-    ]
+    "in_review": []
 }
