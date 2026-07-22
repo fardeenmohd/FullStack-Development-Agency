@@ -1,7 +1,10 @@
+from fastapi import FastAPI, HTTPException
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
+
+app = FastAPI()
 
 class ForecastService:
     def __init__(self, data_path):
@@ -25,11 +28,15 @@ class ForecastService:
         predictions = self.model.predict_proba(new_data)[:, 1]
         return predictions
 
-# Example usage
-if __name__ == "__main__":
-    forecast_service = ForecastService('historical_data.csv')
-    forecast_service.preprocess_data()
-    forecast_service.train_model()
-    new_data = pd.DataFrame({'feature1': [value1], 'feature2': [value2], ...})
-    predicted_conversion_rate = forecast_service.predict_conversion_rate(new_data)
-    print(f"Predicted Conversion Rate: {predicted_conversion_rate[0]}")
+forecast_service = ForecastService('historical_data.csv')
+forecast_service.preprocess_data()
+forecast_service.train_model()
+
+@app.post("/predict/")
+async def predict_conversion_rate(new_data: dict):
+    try:
+        new_df = pd.DataFrame([new_data])
+        predicted_conversion_rate = forecast_service.predict_conversion_rate(new_df)
+        return {"predicted_conversion_rate": predicted_conversion_rate[0]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

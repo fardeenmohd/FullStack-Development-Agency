@@ -59,7 +59,7 @@ const LeadSegmentationDashboard = () => {
             <h3 className="text-xl font-semibold">Filter Leads</h3>
             <div className="mt-4 space-y-6">
               {Object.entries(filters).map(([filterName, filterValue]) => (
-                <div key={filterName}>
+                <div key={filterName} className="space-y-1">
                   <label htmlFor={filterName} className="block text-sm font-medium">{capitalize(filterName)}:</label>
                   <input
                     id={filterName}
@@ -74,21 +74,21 @@ const LeadSegmentationDashboard = () => {
             </div>
           </section>
           <section className="bg-gray-700 p-8 rounded-lg shadow mb-8 hover:bg-gray-800 transition-colors duration-200">
-            <h3 className="text-xl font-semibold">Product Performance Analytics</h3>
+            <h3 className="text-xl font-semibold">Historical Lead Conversion Rates</h3>
             <div className="mt-4 space-y-6">
-              {/* Add product performance analytics here */}
+              {/* Add historical lead conversion rates here */}
             </div>
           </section>
           <section className="bg-gray-700 p-8 rounded-lg shadow mb-8 hover:bg-gray-800 transition-colors duration-200">
-            <h3 className="text-xl font-semibold">Top-Performing Products</h3>
-            <ul className="space-y-6 mt-4">
-              {/* Add top-performing products here */}
-            </ul>
+            <h3 className="text-xl font-semibold">Current Market Trends</h3>
+            <div className="mt-4 space-y-6">
+              {/* Add current market trends here */}
+            </div>
           </section>
           <section className="bg-gray-700 p-8 rounded-lg shadow mb-8 hover:bg-gray-800 transition-colors duration-200">
-            <h3 className="text-xl font-semibold">Areas for Improvement</h3>
+            <h3 className="text-xl font-semibold">Actionable Insights</h3>
             <ul className="space-y-6 mt-4">
-              {/* Add areas for improvement here */}
+              {/* Add actionable insights here */}
             </ul>
           </section>
         </main>

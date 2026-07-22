@@ -1,20 +1,11 @@
 import os
 import json
 import sys
+from agency_utils import load_board, save_board, get_project_root
+from local_llm import generate_local_code
 
-# Set up robust absolute paths
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT = os.path.abspath(os.path.join(CURRENT_DIR, ".."))
-BOARD_FILE = os.path.join(PROJECT_ROOT, "antigravity_board.json")
+PROJECT_ROOT = get_project_root()
 BLUEPRINT_FILE = os.path.join(PROJECT_ROOT, "system_blueprint.json")
-
-# Append current directory so we can use the local_llm adapter
-sys.path.append(CURRENT_DIR)
-try:
-    from local_llm import generate_local_code
-except ImportError:
-    print("❌ Error: Could not import local_llm. Make sure local_llm.py is in the agents directory.")
-    sys.exit(1)
 
 po_persona = """
 You are an expert Agile Product Owner and Technical Lead.
@@ -25,22 +16,12 @@ You must output a strictly formatted JSON object containing:
    Each ticket object MUST have:
    - "id": A unique string ID (e.g., "UI-1", "API-1").
    - "agent": The specific agent to handle the task. Must be exactly one of: ["frontend", "compute", "enterprise", "devops", "qa"].
-   - "target_file": The primary file this task will create or modify. CRITICAL: THIS MUST NEVER BE EMPTY. Invent a logical file path if needed (e.g., "tests/test_api.py", "components/Button.tsx").
-   - "description": A highly detailed, technical prompt that will be sent to the developer agent instructing them exactly what code to write.
-
-CRITICAL: Output ONLY valid JSON. Do not wrap the JSON in markdown code blocks.
+   - "target_file": The primary file this task will create or modify. CRITICAL: THIS MUST NEVER BE EMPTY.
+   - "description": A highly detailed, technical prompt instructing exactly what code to write.
 """
 
-def init_board():
-    """Initializes the Antigravity board if it doesn't exist."""
-    if not os.path.exists(BOARD_FILE):
-        with open(BOARD_FILE, "w", encoding="utf-8") as f:
-            json.dump({"todo": [], "in_progress": [], "in_review": [], "done": [], "archived": []}, f, indent=4)
-
 def run_po_agent(user_prompt: str):
-    init_board()
-    
-    print(f"📋 Product Owner Agent is breaking down request: '{user_prompt}'")
+    print(f"📋 [Product Owner] Breaking down request: '{user_prompt}'")
 
     system_blueprint = "{}"
     if os.path.exists(BLUEPRINT_FILE):
@@ -48,59 +29,36 @@ def run_po_agent(user_prompt: str):
             system_blueprint = f.read()
 
     llm_prompt = f"""
-    Current System Architecture Blueprint:
-    {system_blueprint}
-    
-    User Feature Request:
-    "{user_prompt}"
-    
-    Break this request down into technical tickets. 
-    If the user asks for a UI dashboard, assign a ticket to the "frontend" agent to overwrite "app/page.tsx" with a modern Tailwind CSS dashboard.
+    Current System Blueprint: {system_blueprint}
+    User Feature Request: "{user_prompt}"
     """
 
-    try:
-        # Ask the local 3070 Ti to generate the tickets
-        generated_payload = generate_local_code(po_persona, llm_prompt)
-        new_tickets = generated_payload.get("tickets", [])
+    # OPTIMIZATION: One clean call to the local_llm adapter. 
+    # It auto-retries if the JSON is malformed!
+    generated_payload = generate_local_code(po_persona, llm_prompt, expect_json=True)
+    new_tickets = generated_payload.get("tickets", [])
+    
+    if not new_tickets:
+        print("⚠️ [PO] Did not return any tickets.")
+        return
+
+    # OPTIMIZATION: Clean board loading
+    board = load_board()
         
-        if not new_tickets:
-            print("⚠️ PO Agent did not return any tickets.")
-            return
-
-        # Load the current board
-        with open(BOARD_FILE, "r", encoding="utf-8") as f:
-            board = json.load(f)
+    for ticket in new_tickets:
+        # Safety Net
+        target = ticket.get("target_file", "").strip()
+        if not target or target in [".", "/", "\\"]:
+            ticket["target_file"] = f"auto_generated_{ticket.get('id', 'task').lower()}.txt"
             
-        # Ensure all columns exist
-        for col in ["todo", "in_progress", "in_review", "done", "archived"]:
-            if col not in board:
-                board[col] = []
-                
-        # Append new tickets to the 'todo' column
-        for ticket in new_tickets:
-            # SAFETY NET: If the LLM hallucinates an empty target file, auto-generate one!
-            target = ticket.get("target_file", "").strip()
-            if not target or target in [".", "/", "\\"]:
-                ext_map = {"frontend": "tsx", "compute": "py", "enterprise": "java", "qa": "py", "devops": "yml"}
-                ext = ext_map.get(ticket.get("agent", "compute"), "txt")
-                ticket["target_file"] = f"auto_generated_{ticket.get('id', 'task').lower()}.{ext}"
-                
-            board["todo"].append(ticket)
-            print(f"  🎟️ Ticket Created: [{ticket['id']}] -> Assigned to '{ticket['agent']}' for {ticket['target_file']}")
-            
-        # Save the updated board
-        with open(BOARD_FILE, "w", encoding="utf-8") as f:
-            json.dump(board, f, indent=4)
-            
-        print("\n✅ Backlog successfully updated! The Antigravity Dispatcher can now pick up these tasks.")
-
-    except Exception as e:
-        print(f"❌ Error during PO ticket generation: {e}")
-        sys.exit(1)
+        board["todo"].append(ticket)
+        print(f"  🎟️ Ticket Created: [{ticket['id']}] -> '{ticket['agent']}' for {ticket['target_file']}")
+        
+    save_board(board)
+    print("\n✅ Backlog successfully updated! The Dispatcher can now pick up these tasks.")
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: python po_agent.py \"Your feature request here\"")
     else:
-        request = sys.argv[1]
-        run_po_agent(request)
+        run_po_agent(sys.argv[1])

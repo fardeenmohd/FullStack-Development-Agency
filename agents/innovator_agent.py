@@ -1,25 +1,14 @@
 import os
-import json
+import sys
 import time
 import subprocess
-import sys
+from agency_utils import load_board, get_project_root
+from local_llm import generate_local_code
 
-# Set up robust absolute paths so this script works from ANY directory
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT = os.path.abspath(os.path.join(CURRENT_DIR, ".."))
-
-# Append current directory so we can use the local_llm adapter
-sys.path.append(CURRENT_DIR)
-try:
-    from local_llm import generate_local_code
-except ImportError:
-    print("❌ Error: Could not import local_llm. Make sure local_llm.py is in the agents directory.")
-    sys.exit(1)
-
-BOARD_FILE = os.path.join(PROJECT_ROOT, "antigravity_board.json")
+PROJECT_ROOT = get_project_root()
 BLUEPRINT_FILE = os.path.join(PROJECT_ROOT, "system_blueprint.json")
 HISTORY_FILE = os.path.join(PROJECT_ROOT, "innovation_history.txt")
-PO_AGENT_SCRIPT = os.path.join(CURRENT_DIR, "po_agent.py")
+PO_AGENT_SCRIPT = os.path.join(PROJECT_ROOT, "agents", "po_agent.py")
 CHECK_INTERVAL = 15 # Check the board every 15 seconds
 
 innovator_persona = """
@@ -40,15 +29,8 @@ CRITICAL: Output ONLY valid JSON. Do not wrap the JSON in markdown code blocks.
 
 def is_team_idle():
     """Checks if the kanban board has any pending or active tickets."""
-    if not os.path.exists(BOARD_FILE):
-        return True
-    try:
-        with open(BOARD_FILE, "r") as f:
-            board = json.load(f)
-            # Team is idle if both todo and in_progress are empty
-            return len(board.get("todo", [])) == 0 and len(board.get("in_progress", [])) == 0
-    except Exception:
-        return True
+    board = load_board()
+    return len(board.get("todo", [])) == 0 and len(board.get("in_progress", [])) == 0
 
 def get_innovation_history():
     """Reads the history of previously generated features."""
